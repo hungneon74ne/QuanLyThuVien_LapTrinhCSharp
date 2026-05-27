@@ -117,34 +117,53 @@
             </div>
         </div>
 
-        <!-- Biểu đồ placeholder -->
+        <!-- Biểu đồ Chart.js -->
         <div class="row mt-4">
             <div class="col-md-6 mb-4">
                 <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                     <div class="card-header bg-transparent py-3">
-                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-pie me-2 text-info"></i>Biểu đồ theo thể loại</h5>
+                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-pie me-2 text-info"></i>Sách theo thể loại</h5>
                     </div>
                     <div class="card-body">
-                        <div class="text-center py-5 text-muted">
-                            <i class="fas fa-chart-pie fa-3x mb-3"></i>
-                            <p>Biểu đồ sẽ được hiển thị sau khi tích hợp Chart.js</p>
-                        </div>
+                        <canvas id="chartTheLoai" height="250"></canvas>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 mb-4">
                 <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                     <div class="card-header bg-transparent py-3">
-                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-line me-2 text-warning"></i>Biểu đồ mượn theo tháng</h5>
+                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-line me-2 text-warning"></i>Lượt mượn theo tháng (năm nay)</h5>
                     </div>
                     <div class="card-body">
-                        <div class="text-center py-5 text-muted">
-                            <i class="fas fa-chart-line fa-3x mb-3"></i>
-                            <p>Biểu đồ sẽ được hiển thị sau khi tích hợp Chart.js</p>
-                        </div>
+                        <canvas id="chartMuonThang" height="250"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Biểu đồ thể loại
+    const theLoaiData = @Html.Raw(ViewBag.TheLoaiChartJson ?? "[]");
+    new Chart(document.getElementById('chartTheLoai'), {
+        type: 'doughnut',
+        data: {
+            labels: theLoaiData.map(x => x.ten),
+            datasets: [{ data: theLoaiData.map(x => x.soLuong), backgroundColor: ['#0066cc','#28a745','#ffc107','#dc3545','#17a2b8','#6f42c1','#fd7e14','#20c997'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Biểu đồ mượn theo tháng
+    const muonThangData = @Html.Raw(ViewBag.MuonThangChartJson ?? "[0,0,0,0,0,0,0,0,0,0,0,0]");
+    new Chart(document.getElementById('chartMuonThang'), {
+        type: 'bar',
+        data: {
+            labels: ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'],
+            datasets: [{ label: 'Lượt mượn', data: muonThangData, backgroundColor: 'rgba(0,102,204,0.7)', borderColor: '#0066cc', borderWidth: 1 }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+</script>

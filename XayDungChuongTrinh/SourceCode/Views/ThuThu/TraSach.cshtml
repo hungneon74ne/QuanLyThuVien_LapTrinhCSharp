@@ -110,35 +110,28 @@
 <script>
     function confirmReturn(event, chiTietId) {
         event.preventDefault();
-        
         const form = event.target;
         const tinhTrang = form.tinhTrang.value;
         const tienPhat = form.tienPhat.value;
         const ghiChu = form.ghiChu.value;
-        
-        if (!confirm('Bạn có chắc muốn xác nhận trả sách này?')) {
-            return;
-        }
-        
-        fetch('/ThuThu/XacNhanTraSach', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chiTietId: chiTietId,
-                tinhTrang: parseInt(tinhTrang),
-                tienPhat: parseFloat(tienPhat) || 0,
-                ghiChu: ghiChu
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Đã xác nhận trả sách thành công!');
-                location.reload();
-            } else {
-                alert(data.message || 'Có lỗi xảy ra!');
+
+        showConfirm('Bạn có chắc muốn xác nhận trả sách này?', async () => {
+            try {
+                const result = await apiPost('/ThuThu/XacNhanTraSach', {
+                    chiTietId: chiTietId,
+                    tinhTrang: parseInt(tinhTrang),
+                    tienPhat: parseFloat(tienPhat) || 0,
+                    ghiChu: ghiChu
+                });
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    showToast(result.message || 'Có lỗi xảy ra!', 'danger');
+                }
+            } catch {
+                showToast('Có lỗi xảy ra!', 'danger');
             }
-        })
-        .catch(() => alert('Có lỗi xảy ra!'));
+        });
     }
 </script>
