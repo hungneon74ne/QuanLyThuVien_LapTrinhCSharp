@@ -1,0 +1,184 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+    ViewBag.ActiveMenu = "Index";
+}
+
+<div class="card content-card border-0">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin</h4>
+    </div>
+    <div class="card-body p-4">
+        <!-- Thống kê tổng quan -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px; border-left: 4px solid #007bff;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Tổng số sách</h6>
+                                <h3 class="fw-bold mb-0">@ViewBag.TotalSach</h3>
+                            </div>
+                            <div class="text-primary" style="font-size: 2rem;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px; border-left: 4px solid #28a745;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Tổng độc giả</h6>
+                                <h3 class="fw-bold mb-0">@ViewBag.TotalDocGia</h3>
+                            </div>
+                            <div class="text-success" style="font-size: 2rem;">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px; border-left: 4px solid #17a2b8;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Thủ thư</h6>
+                                <h3 class="fw-bold mb-0">@ViewBag.TotalThuThu</h3>
+                            </div>
+                            <div class="text-info" style="font-size: 2rem;">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px; border-left: 4px solid #ffc107;">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-1">Phiếu quá hạn</h6>
+                                <h3 class="fw-bold mb-0">@ViewBag.TotalPhieuQuaHan</h3>
+                            </div>
+                            <div class="text-warning" style="font-size: 2rem;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top sách được mượn nhiều nhất -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-star me-2 text-warning"></i>Top 5 sách được mượn nhiều nhất</h5>
+                    </div>
+                    <div class="card-body p-3">
+                        @if (ViewBag.TopSach != null && ((dynamic)ViewBag.TopSach).Count > 0)
+                        {
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tên sách</th>
+                                        <th class="text-end">Số lần mượn</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.TopSach)
+                                    {
+                                        <tr>
+                                            <td>@item.Sach.TenSach</td>
+                                            <td class="text-end fw-bold">@item.Count</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center mb-0">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-user-graduate me-2 text-info"></i>Top 5 độc giả mượn nhiều nhất</h5>
+                    </div>
+                    <div class="card-body p-3">
+                        @if (ViewBag.TopDocGia != null && ((dynamic)ViewBag.TopDocGia).Count > 0)
+                        {
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Họ tên</th>
+                                        <th class="text-end">Số lần mượn</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.TopDocGia)
+                                    {
+                                        <tr>
+                                            <td>@item.DocGia.NguoiDung.HoTen</td>
+                                            <td class="text-end fw-bold">@item.Count</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center mb-0">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thống kê mượn trả theo tháng -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-chart-line me-2 text-primary"></i>Thống kê mượn trả theo tháng (@DateTime.Now.Year)</h5>
+                    </div>
+                    <div class="card-body p-3">
+                        @if (ViewBag.ThongKeThang != null && ((dynamic)ViewBag.ThongKeThang).Count > 0)
+                        {
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tháng</th>
+                                        <th class="text-end">Số phiếu mượn</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.ThongKeThang)
+                                    {
+                                        <tr>
+                                            <td>Tháng @item.Thang</td>
+                                            <td class="text-end fw-bold">@item.Count</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center mb-0">Chưa có dữ liệu</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
