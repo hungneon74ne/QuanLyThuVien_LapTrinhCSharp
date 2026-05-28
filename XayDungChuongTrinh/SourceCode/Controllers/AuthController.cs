@@ -73,7 +73,7 @@ namespace QuanLyThuVien.Controllers
                 case QuyenNguoiDung.ThuThu:
                     return RedirectToAction("Index", "ThuThu");
                 case QuyenNguoiDung.DocGia:
-                    return RedirectToAction("Dashboard", "DocGia");
+                    return RedirectToAction("Index", "Home");
                 default:
                     return RedirectToAction("AccessDenied");
             }

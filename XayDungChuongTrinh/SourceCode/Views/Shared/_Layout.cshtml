@@ -13,7 +13,12 @@
         body {
             background: #f8f9fa;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             font-family: 'Roboto', sans-serif;
+        }
+        .main-content {
+            flex: 1;
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Roboto', sans-serif;
@@ -122,9 +127,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/Home/About">Giới thiệu</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Home/Contact">Liên hệ</a>
-                    </li>
                 </ul>
                 <form class="d-flex me-3 position-relative" action="/Home/Books" method="get">
                     <div class="input-group" style="width: 300px;">
@@ -135,12 +137,22 @@
                 <ul class="navbar-nav">
                     @if (Context.Session.GetString("MaNguoiDung") != null)
                     {
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="/DocGia/NhanThongBao">
+                                <i class="fas fa-bell"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                                    @ViewBag.UnreadCount ?? 0
+                                </span>
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle"></i> @Context.Session.GetString("HoTen")
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/DocGia/Dashboard">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="/DocGia/Dashboard">Trang Độc Giả</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="/Auth/Logout"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                             </ul>
                         </li>
                     }
@@ -155,8 +167,10 @@
         </div>
     </nav>
 
-    <div class="container" style="padding-top: 100px; padding-bottom: 30px;">
-        @RenderBody()
+    <div class="main-content">
+        <div class="container" style="padding-top: 100px; padding-bottom: 30px;">
+            @RenderBody()
+        </div>
     </div>
 
     <footer class="py-5 mt-5" style="background: #333; color: white;">
@@ -178,7 +192,6 @@
                         <li class="mb-2"><a href="/" class="text-white-50 text-decoration-none">Trang chủ</a></li>
                         <li class="mb-2"><a href="/Home/Books" class="text-white-50 text-decoration-none">Sách</a></li>
                         <li class="mb-2"><a href="/Home/About" class="text-white-50 text-decoration-none">Giới thiệu</a></li>
-                        <li class="mb-2"><a href="/Home/Contact" class="text-white-50 text-decoration-none">Liên hệ</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4">

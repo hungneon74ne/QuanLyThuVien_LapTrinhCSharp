@@ -1,0 +1,193 @@
+@model List<QuanLyThuVien.Models.PhieuMuon>
+@{
+    ViewData["Title"] = "Yêu cầu mượn";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "YeuCauMuon";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-inbox me-2"></i>Yêu cầu mượn sách</h4>
+    </div>
+    <div class="card-body p-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var phieu in Model)
+            {
+                <div class="card mb-4 border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="fw-bold mb-3">
+                                    <i class="fas fa-file-alt me-2 text-primary"></i>Phiếu mượn PM@(phieu.MaPhieuMuon.ToString("D3"))
+                                </h5>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <strong>Người mượn:</strong> @phieu.DocGia?.NguoiDung?.HoTen
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Ngày yêu cầu:</strong> @phieu.NgayMuon.ToString("dd/MM/yyyy HH:mm")
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <strong>SĐT:</strong> @phieu.DocGia?.NguoiDung?.SoDienThoai
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Email:</strong> @phieu.DocGia?.NguoiDung?.Email
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="badge badge-warning fs-6 p-2">Chờ duyệt</span>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <h6 class="fw-bold mb-3"><i class="fas fa-book me-2"></i>Sách muốn mượn:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Hình ảnh</th>
+                                        <th>Tên sách</th>
+                                        <th>Tác giả</th>
+                                        <th>Thể loại</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (phieu.ChiTietPhieuMuons != null)
+                                    {
+                                        @foreach (var ct in phieu.ChiTietPhieuMuons)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(ct.Sach?.HinhAnh))
+                                                    {
+                                                        <img src="@ct.Sach.HinhAnh" alt="@ct.Sach.TenSach" style="width: 40px; height: 56px; object-fit: cover; border-radius: 4px;" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <div style="width: 40px; height: 56px; background: #e0e0e0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                                            <i class="fas fa-book text-muted" style="font-size: 12px;"></i>
+                                                        </div>
+                                                    }
+                                                </td>
+                                                <td>@ct.Sach?.TenSach</td>
+                                                <td>@ct.Sach?.TacGia?.TenTacGia</td>
+                                                <td>@ct.Sach?.TheLoai?.TenTheLoai</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-4 text-end">
+                            <button class="btn btn-success me-2" onclick="approveRequest(@phieu.MaPhieuMuon)">
+                                <i class="fas fa-check me-1"></i>Duyệt
+                            </button>
+                            <button class="btn btn-danger" onclick="rejectRequest(@phieu.MaPhieuMuon)">
+                                <i class="fas fa-times me-1"></i>Từ chối
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-4x mb-3 text-muted"></i>
+                <h5 class="text-muted">Không có yêu cầu mượn nào</h5>
+                <p class="text-muted">Tất cả yêu cầu đã được xử lý.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal Từ chối -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lý do từ chối</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rejectPhieuId" />
+                <div class="mb-3">
+                    <label class="form-label">Nhập lý do từ chối *</label>
+                    <textarea class="form-control" id="rejectReason" rows="4" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="confirmReject()">Xác nhận từ chối</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let rejectModal;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        rejectModal = new bootstrap.Modal(document.getElementById('rejectModal'));
+    });
+
+    function approveRequest(id) {
+        if (confirm('Bạn có chắc muốn duyệt yêu cầu mượn này?')) {
+            // Call API to approve
+            fetch('/ThuThu/DuyetYeuCauMuon', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Đã duyệt yêu cầu thành công!');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra!');
+                }
+            })
+            .catch(() => alert('Có lỗi xảy ra!'));
+        }
+    }
+
+    function rejectRequest(id) {
+        document.getElementById('rejectPhieuId').value = id;
+        document.getElementById('rejectReason').value = '';
+        rejectModal.show();
+    }
+
+    function confirmReject() {
+        const id = document.getElementById('rejectPhieuId').value;
+        const reason = document.getElementById('rejectReason').value;
+        
+        if (!reason.trim()) {
+            alert('Vui lòng nhập lý do từ chối!');
+            return;
+        }
+        
+        fetch('/ThuThu/TuChoiYeuCauMuon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, reason: reason })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã từ chối yêu cầu thành công!');
+                rejectModal.hide();
+                location.reload();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra!');
+            }
+        })
+        .catch(() => alert('Có lỗi xảy ra!'));
+    }
+</script>

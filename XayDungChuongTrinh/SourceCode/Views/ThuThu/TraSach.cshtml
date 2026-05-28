@@ -1,0 +1,144 @@
+@model List<QuanLyThuVien.Models.ChiTietPhieuMuon>
+@{
+    ViewData["Title"] = "Trả sách";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "TraSach";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-undo me-2"></i>Xử lý trả sách</h4>
+    </div>
+    <div class="card-body p-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var ct in Model)
+            {
+                <div class="card mb-4 border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-3 text-center mb-3 mb-md-0">
+                                @if (!string.IsNullOrEmpty(ct.Sach?.HinhAnh))
+                                {
+                                    <img src="@ct.Sach.HinhAnh" alt="@ct.Sach.TenSach" style="width: 100px; height: 140px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" />
+                                }
+                                else
+                                {
+                                    <div style="width: 100px; height: 140px; background: #e0e0e0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                        <i class="fas fa-book text-muted" style="font-size: 30px;"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-9">
+                                <h5 class="fw-bold mb-3">
+                                    <i class="fas fa-book me-2 text-primary"></i>@ct.Sach?.TenSach
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Người mượn:</strong> @ct.PhieuMuon?.DocGia?.NguoiDung?.HoTen
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Mã phiếu:</strong> PM@(ct.PhieuMuon?.MaPhieuMuon.ToString("D3"))
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Ngày mượn:</strong> @ct.PhieuMuon?.NgayMuon.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>SĐT:</strong> @ct.PhieuMuon?.DocGia?.NguoiDung?.SoDienThoai
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <strong>Hạn trả:</strong> @ct.PhieuMuon?.HanTra?.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        @if (ct.PhieuMuon?.HanTra < DateTime.Now)
+                                        {
+                                            <span class="badge badge-danger">Quá hạn @((DateTime.Now - ct.PhieuMuon.HanTra.Value).Days) ngày</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">Còn hạn</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <h6 class="fw-bold mb-3">Xác nhận trả sách</h6>
+                        <form onsubmit="confirmReturn(event, @ct.MaChiTiet)">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Tình trạng sách *</label>
+                                    <select class="form-select" name="tinhTrang" required>
+                                        <option value="1">Tốt</option>
+                                        <option value="2">Hư hỏng nhẹ</option>
+                                        <option value="3">Hư hỏng nặng</option>
+                                        <option value="4">Mất sách</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Tiền phạt (đ)</label>
+                                    <input type="number" class="form-control" name="tienPhat" min="0" value="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Ghi chú</label>
+                                    <input type="text" class="form-control" name="ghiChu" placeholder="Ghi chú thêm...">
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-check me-1"></i>Xác nhận trả sách
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-undo fa-4x mb-3 text-muted"></i>
+                <h5 class="text-muted">Không có sách nào cần xử lý trả</h5>
+                <p class="text-muted">Tất cả sách đã được trả.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function confirmReturn(event, chiTietId) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const tinhTrang = form.tinhTrang.value;
+        const tienPhat = form.tienPhat.value;
+        const ghiChu = form.ghiChu.value;
+        
+        if (!confirm('Bạn có chắc muốn xác nhận trả sách này?')) {
+            return;
+        }
+        
+        fetch('/ThuThu/XacNhanTraSach', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chiTietId: chiTietId,
+                tinhTrang: parseInt(tinhTrang),
+                tienPhat: parseFloat(tienPhat) || 0,
+                ghiChu: ghiChu
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã xác nhận trả sách thành công!');
+                location.reload();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra!');
+            }
+        })
+        .catch(() => alert('Có lỗi xảy ra!'));
+    }
+</script>

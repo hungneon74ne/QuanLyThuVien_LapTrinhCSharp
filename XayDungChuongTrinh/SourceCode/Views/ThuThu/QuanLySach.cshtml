@@ -1,0 +1,305 @@
+@model List<QuanLyThuVien.Models.Sach>
+@{
+    ViewData["Title"] = "Quản lý sách";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuanLySach";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-book me-2"></i>Quản lý sách</h4>
+    </div>
+    <div class="card-body p-4">
+        <!-- Toolbar -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm sách...">
+                    <button class="btn btn-primary" onclick="searchBooks()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="theLoaiFilter" onchange="filterByTheLoai()">
+                    <option value="">Tất cả thể loại</option>
+                    @if (ViewBag.TheLoais != null)
+                    {
+                        @foreach (var tl in (List<QuanLyThuVien.Models.TheLoai>)ViewBag.TheLoais)
+                        {
+                            <option value="@tl.MaTheLoai">@tl.TenTheLoai</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-5 text-end">
+                <button class="btn btn-success me-2" onclick="addBook()">
+                    <i class="fas fa-plus me-1"></i>Thêm
+                </button>
+                <button class="btn btn-secondary me-2" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Grid -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Mã sách</th>
+                        <th>Tên sách</th>
+                        <th>Tác giả</th>
+                        <th>Thể loại</th>
+                        <th>Nhà xuất bản</th>
+                        <th>Số lượng</th>
+                        <th>Giá tiền</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var sach in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(sach.HinhAnh))
+                                    {
+                                        <img src="@sach.HinhAnh" alt="@sach.TenSach" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 50px; height: 70px; background: #e0e0e0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-book text-muted"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="fw-bold">S@(sach.MaSach.ToString("D4"))</td>
+                                <td>@sach.TenSach</td>
+                                <td>@sach.TacGia?.TenTacGia</td>
+                                <td><span class="badge bg-info">@sach.TheLoai?.TenTheLoai</span></td>
+                                <td>@sach.NhaXuatBan?.TenNhaXuatBan</td>
+                                <td>@sach.SoLuongHienCo</td>
+                                <td>@(sach.GiaTien?.ToString("N0") ?? "0") đ</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1" onclick="editBook(@sach.MaSach)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteBook(@sach.MaSach)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">
+                                <i class="fas fa-book fa-2x mb-2 text-light"></i>
+                                <p>Không có sách nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm/Sửa sách -->
+<div class="modal fade" id="bookModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalTitle">Thêm sách mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bookForm">
+                    <input type="hidden" id="maSach" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="isbn">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tên sách *</label>
+                            <input type="text" class="form-control" id="tenSach" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tác giả *</label>
+                            <select class="form-select" id="tacGia" required>
+                                <option value="">Chọn tác giả</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Thể loại *</label>
+                            <select class="form-select" id="theLoai" required>
+                                <option value="">Chọn thể loại</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nhà xuất bản *</label>
+                            <select class="form-select" id="nhaXuatBan" required>
+                                <option value="">Chọn nhà xuất bản</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Năm xuất bản</label>
+                            <input type="number" class="form-control" id="namXuatBan" min="1900">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Số lượng tổng *</label>
+                            <input type="number" class="form-control" id="soLuongTong" min="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Số lượng hiện có *</label>
+                            <input type="number" class="form-control" id="soLuongHienCo" min="0" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Số trang</label>
+                            <input type="number" class="form-control" id="soTrang" min="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Giá tiền *</label>
+                            <input type="number" class="form-control" id="giaTien" min="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Hình ảnh</label>
+                            <input type="file" class="form-control" id="hinhAnhFile" accept="image/*">
+                            <input type="hidden" id="hinhAnh">
+                            <small class="text-muted">Chọn hình ảnh từ máy tính</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" id="moTa" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveBook()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let bookModal;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        bookModal = new bootstrap.Modal(document.getElementById('bookModal'));
+        loadDropdowns();
+    });
+
+    function loadDropdowns() {
+        // Load tác giả, thể loại, nhà xuất bản từ API
+        // Đây là placeholder, cần implement API thực tế
+    }
+
+    function searchBooks() {
+        const keyword = document.getElementById('searchInput').value;
+        window.location.href = `/ThuThu/QuanLySach?keyword=${keyword}`;
+    }
+
+    function filterByTheLoai() {
+        const theLoai = document.getElementById('theLoaiFilter').value;
+        window.location.href = `/ThuThu/QuanLySach?theLoai=${theLoai}`;
+    }
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuanLySach';
+    }
+
+    function addBook() {
+        document.getElementById('bookModalTitle').textContent = 'Thêm sách mới';
+        document.getElementById('bookForm').reset();
+        document.getElementById('maSach').value = '';
+        bookModal.show();
+    }
+
+    function editBook(id) {
+        document.getElementById('bookModalTitle').textContent = 'Sửa sách';
+        // Load book data by ID
+        // Placeholder - cần implement API
+        bookModal.show();
+    }
+
+    function deleteBook(id) {
+        if (confirm('Bạn có chắc muốn xóa sách này?')) {
+            // Call API to delete
+            // Placeholder
+            alert('Đã xóa sách thành công!');
+            refreshData();
+        }
+    }
+
+    async function saveBook() {
+        const form = document.getElementById('bookForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const fileInput = document.getElementById('hinhAnhFile');
+        let imageUrl = document.getElementById('hinhAnh').value;
+
+        // Upload file nếu có chọn
+        if (fileInput.files.length > 0) {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/ThuThu/UploadImage', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    imageUrl = result.imageUrl;
+                } else {
+                    alert('Lỗi upload ảnh: ' + result.message);
+                    return;
+                }
+            } catch (error) {
+                alert('Lỗi upload ảnh: ' + error.message);
+                return;
+            }
+        }
+
+        // Call API to save book data
+        const bookData = {
+            maSach: document.getElementById('maSach').value,
+            isbn: document.getElementById('isbn').value,
+            tenSach: document.getElementById('tenSach').value,
+            maTacGia: document.getElementById('tacGia').value,
+            maTheLoai: document.getElementById('theLoai').value,
+            maNhaXuatBan: document.getElementById('nhaXuatBan').value,
+            namXuatBan: document.getElementById('namXuatBan').value,
+            soLuongTong: document.getElementById('soLuongTong').value,
+            soLuongHienCo: document.getElementById('soLuongHienCo').value,
+            soTrang: document.getElementById('soTrang').value,
+            giaTien: document.getElementById('giaTien').value,
+            hinhAnh: imageUrl,
+            moTa: document.getElementById('moTa').value
+        };
+
+        // Placeholder - call API to save
+        console.log('Saving book:', bookData);
+        alert('Đã lưu sách thành công!');
+        bookModal.hide();
+        refreshData();
+    }
+</script>

@@ -1,0 +1,245 @@
+@model List<QuanLyThuVien.Models.DocGia>
+@{
+    ViewData["Title"] = "Quản lý độc giả";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuanLyDocGia";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-users me-2"></i>Quản lý độc giả</h4>
+    </div>
+    <div class="card-body p-4">
+        <!-- Toolbar -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm độc giả...">
+                    <button class="btn btn-primary" onclick="searchDocGia()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-8 text-end">
+                <button class="btn btn-success me-2" onclick="addDocGia()">
+                    <i class="fas fa-plus me-1"></i>Thêm độc giả
+                </button>
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Grid -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã độc giả</th>
+                        <th>Họ tên</th>
+                        <th>SĐT</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var dg in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">DG@(dg.MaDocGia.ToString("D4"))</td>
+                                <td>@dg.TenDocGia</td>
+                                <td>@dg.SoDienThoai</td>
+                                <td>@dg.Email</td>
+                                <td><span class="badge bg-info">@dg.VaiTroDocGia?.TenVaiTro</span></td>
+                                <td>
+                                    @if (dg.NguoiDung?.TrangThai == QuanLyThuVien.Enums.TrangThaiTaiKhoan.HoatDong)
+                                    {
+                                        <span class="badge badge-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Khóa</span>
+                                    }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1" onclick="editDocGia(@dg.MaDocGia)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteDocGia(@dg.MaDocGia)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <i class="fas fa-users fa-2x mb-2 text-light"></i>
+                                <p>Không có độc giả nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm/Sửa độc giả -->
+<div class="modal fade" id="docGiaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="docGiaModalTitle">Thêm độc giả mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="docGiaForm">
+                    <input type="hidden" id="maDocGia" />
+                    <input type="hidden" id="maNguoiDung" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Họ tên *</label>
+                            <input type="text" class="form-control" id="hoTen" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Giới tính</label>
+                            <select class="form-select" id="gioiTinh">
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">SĐT *</label>
+                            <input type="text" class="form-control" id="soDienThoai" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" id="ngaySinh">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CCCD</label>
+                            <input type="text" class="form-control" id="soCCCD">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" id="diaChi">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ngày bắt đầu *</label>
+                            <input type="date" class="form-control" id="ngayBatDau" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ngày kết thúc</label>
+                            <input type="date" class="form-control" id="ngayKetThuc">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vai trò *</label>
+                        <select class="form-select" id="vaiTro" required>
+                            <option value="">Chọn vai trò</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tên đăng nhập *</label>
+                            <input type="text" class="form-control" id="tenDangNhap" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mật khẩu *</label>
+                            <input type="password" class="form-control" id="matKhau" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" id="trangThai">
+                            <option value="1">Hoạt động</option>
+                            <option value="0">Khóa</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveDocGia()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let docGiaModal;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        docGiaModal = new bootstrap.Modal(document.getElementById('docGiaModal'));
+        loadVaiTros();
+    });
+
+    function loadVaiTros() {
+        // Load vai trò từ API
+        // Placeholder
+    }
+
+    function searchDocGia() {
+        const keyword = document.getElementById('searchInput').value;
+        window.location.href = `/ThuThu/QuanLyDocGia?keyword=${keyword}`;
+    }
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuanLyDocGia';
+    }
+
+    function addDocGia() {
+        document.getElementById('docGiaModalTitle').textContent = 'Thêm độc giả mới';
+        document.getElementById('docGiaForm').reset();
+        document.getElementById('maDocGia').value = '';
+        docGiaModal.show();
+    }
+
+    function editDocGia(id) {
+        document.getElementById('docGiaModalTitle').textContent = 'Sửa độc giả';
+        // Load doc gia data by ID
+        // Placeholder
+        docGiaModal.show();
+    }
+
+    function deleteDocGia(id) {
+        if (confirm('Bạn có chắc muốn xóa độc giả này?')) {
+            // Call API to delete
+            // Placeholder
+            alert('Đã xóa độc giả thành công!');
+            refreshData();
+        }
+    }
+
+    function saveDocGia() {
+        const form = document.getElementById('docGiaForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+        
+        // Call API to save
+        // Placeholder
+        alert('Đã lưu độc giả thành công!');
+        docGiaModal.hide();
+        refreshData();
+    }
+</script>

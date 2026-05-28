@@ -1,0 +1,209 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản lý thư viện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+        }
+        .sidebar-card {
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 1000;
+            position: relative;
+        }
+        .sidebar-header {
+            background: #0066cc;
+            color: white;
+        }
+        .list-group-item {
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background: rgba(0, 102, 204, 0.05);
+        }
+        .list-group-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .sidebar-submenu {
+            padding-left: 15px;
+        }
+        .sidebar-divider {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #6c757d;
+            padding: 8px 20px;
+            pointer-events: none;
+        }
+        .content-card {
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .content-header {
+            background: linear-gradient(135deg, #0066cc 0%, #0099ff 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+        .table thead th {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .btn-primary {
+            background: #0066cc;
+            border-color: #0066cc;
+        }
+        .btn-primary:hover {
+            background: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-success {
+            background: #28a745;
+            border-color: #28a745;
+        }
+        .btn-danger {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+        .badge-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        .badge-danger {
+            background: #dc3545;
+        }
+        .badge-success {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 mb-4">
+                <div class="card sidebar-card border-0 shadow-sm">
+                    <div class="card-header sidebar-header py-3">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Thủ Thư</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <a href="/ThuThu/Dashboard" class="text-decoration-none fw-bold @(ViewBag.ActiveMenu == "Dashboard" ? "text-primary" : "text-secondary")">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="sidebar-divider">Quản lý sách</li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuanLySach" class="text-decoration-none @(ViewBag.ActiveMenu == "QuanLySach" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-book me-2"></i>Sách
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuanLyTacGia" class="text-decoration-none @(ViewBag.ActiveMenu == "QuanLyTacGia" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-pen me-2"></i>Tác giả
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuanLyTheLoai" class="text-decoration-none @(ViewBag.ActiveMenu == "QuanLyTheLoai" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-tags me-2"></i>Thể loại
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuanLyNhaXuatBan" class="text-decoration-none @(ViewBag.ActiveMenu == "QuanLyNhaXuatBan" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-building me-2"></i>Nhà xuất bản
+                                </a>
+                            </li>
+                            <li class="sidebar-divider">Quản lý độc giả</li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuanLyDocGia" class="text-decoration-none @(ViewBag.ActiveMenu == "QuanLyDocGia" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-users me-2"></i>Danh sách độc giả
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuanLyVaiTro" class="text-decoration-none @(ViewBag.ActiveMenu == "QuanLyVaiTro" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-user-tag me-2"></i>Vai trò độc giả
+                                </a>
+                            </li>
+                            <li class="sidebar-divider">Quản lý mượn trả</li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/YeuCauMuon" class="text-decoration-none @(ViewBag.ActiveMenu == "YeuCauMuon" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-inbox me-2"></i>Yêu cầu mượn
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/PhieuDangMuon" class="text-decoration-none @(ViewBag.ActiveMenu == "PhieuDangMuon" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-book-open me-2"></i>Phiếu đang mượn
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/TraSach" class="text-decoration-none @(ViewBag.ActiveMenu == "TraSach" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-undo me-2"></i>Trả sách
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuaHan" class="text-decoration-none @(ViewBag.ActiveMenu == "QuaHan" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Quá hạn
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/LichSuMuonTra" class="text-decoration-none @(ViewBag.ActiveMenu == "LichSuMuonTra" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-history me-2"></i>Lịch sử mượn trả
+                                </a>
+                            </li>
+                            <li class="sidebar-divider">Khác</li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/ThongBao" class="text-decoration-none @(ViewBag.ActiveMenu == "ThongBao" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-bell me-2"></i>Thông báo
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/QuyDinhThuVien" class="text-decoration-none @(ViewBag.ActiveMenu == "QuyDinhThuVien" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-info-circle me-2"></i>Quy định thư viện
+                                </a>
+                            </li>
+                            <li class="list-group-item sidebar-submenu">
+                                <a href="/ThuThu/ThongKe" class="text-decoration-none @(ViewBag.ActiveMenu == "ThongKe" ? "fw-bold text-primary" : "text-secondary")">
+                                    <i class="fas fa-chart-bar me-2"></i>Thống kê
+                                </a>
+                            </li>
+                            <li class="sidebar-divider"></li>
+                            <li class="list-group-item">
+                                <a href="/Auth/Logout" class="text-decoration-none text-danger fw-bold">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

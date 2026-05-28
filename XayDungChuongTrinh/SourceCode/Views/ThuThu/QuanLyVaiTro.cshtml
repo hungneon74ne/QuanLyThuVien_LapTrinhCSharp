@@ -1,0 +1,125 @@
+@model List<QuanLyThuVien.Models.VaiTroDocGia>
+@{
+    ViewData["Title"] = "Quản lý vai trò";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuanLyVaiTro";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-user-tag me-2"></i>Quản lý vai trò độc giả</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-8 text-end">
+                <button class="btn btn-success me-2" onclick="addVaiTro()">
+                    <i class="fas fa-plus me-1"></i>Thêm vai trò
+                </button>
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã vai trò</th>
+                        <th>Tên vai trò</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var vt in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">VT@(vt.MaVaiTro.ToString("D3"))</td>
+                                <td>@vt.TenVaiTro</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1" onclick="editVaiTro(@vt.MaVaiTro)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteVaiTro(@vt.MaVaiTro)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">
+                                <i class="fas fa-user-tag fa-2x mb-2 text-light"></i>
+                                <p>Không có vai trò nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="vaiTroModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vaiTroModalTitle">Thêm vai trò</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="vaiTroForm">
+                    <input type="hidden" id="maVaiTro" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên vai trò *</label>
+                        <input type="text" class="form-control" id="tenVaiTro" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveVaiTro()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let vaiTroModal;
+    document.addEventListener('DOMContentLoaded', () => {
+        vaiTroModal = new bootstrap.Modal(document.getElementById('vaiTroModal'));
+    });
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuanLyVaiTro';
+    }
+
+    function addVaiTro() {
+        document.getElementById('vaiTroModalTitle').textContent = 'Thêm vai trò';
+        document.getElementById('vaiTroForm').reset();
+        document.getElementById('maVaiTro').value = '';
+        vaiTroModal.show();
+    }
+
+    function editVaiTro(id) {
+        document.getElementById('vaiTroModalTitle').textContent = 'Sửa vai trò';
+        vaiTroModal.show();
+    }
+
+    function deleteVaiTro(id) {
+        if (confirm('Bạn có chắc muốn xóa vai trò này?')) {
+            alert('Đã xóa vai trò thành công!');
+            refreshData();
+        }
+    }
+
+    function saveVaiTro() {
+        alert('Đã lưu vai trò thành công!');
+        vaiTroModal.hide();
+        refreshData();
+    }
+</script>

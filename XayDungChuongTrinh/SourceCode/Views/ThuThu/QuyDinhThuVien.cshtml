@@ -1,0 +1,130 @@
+@model List<QuanLyThuVien.Models.QuyDinh>
+@{
+    ViewData["Title"] = "Quy định thư viện";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuyDinhThuVien";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-info-circle me-2"></i>Quy định thư viện</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-12 text-end">
+                <button class="btn btn-success me-2" onclick="addQuyDinh()">
+                    <i class="fas fa-plus me-1"></i>Thêm quy định
+                </button>
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var qd in Model)
+            {
+                <div class="card mb-3 border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold mb-2">@qd.TieuDe</h5>
+                                <p class="text-muted mb-2">@qd.NoiDung</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>@qd.NgayTao.ToString("dd/MM/yyyy HH:mm")
+                                </small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-primary me-1" onclick="editQuyDinh(@qd.MaQuyDinh)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteQuyDinh(@qd.MaQuyDinh)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-info-circle fa-4x mb-3 text-muted"></i>
+                <h5 class="text-muted">Không có quy định nào</h5>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="quyDinhModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quyDinhModalTitle">Thêm quy định</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quyDinhForm">
+                    <input type="hidden" id="maQuyDinh" />
+                    <div class="mb-3">
+                        <label class="form-label">Tiêu đề *</label>
+                        <input type="text" class="form-control" id="tieuDe" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nội dung *</label>
+                        <textarea class="form-control" id="noiDung" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" id="trangThai">
+                            <option value="1">Hiển thị</option>
+                            <option value="0">Ẩn</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveQuyDinh()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let quyDinhModal;
+    document.addEventListener('DOMContentLoaded', () => {
+        quyDinhModal = new bootstrap.Modal(document.getElementById('quyDinhModal'));
+    });
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuyDinhThuVien';
+    }
+
+    function addQuyDinh() {
+        document.getElementById('quyDinhModalTitle').textContent = 'Thêm quy định';
+        document.getElementById('quyDinhForm').reset();
+        document.getElementById('maQuyDinh').value = '';
+        quyDinhModal.show();
+    }
+
+    function editQuyDinh(id) {
+        document.getElementById('quyDinhModalTitle').textContent = 'Sửa quy định';
+        quyDinhModal.show();
+    }
+
+    function deleteQuyDinh(id) {
+        if (confirm('Bạn có chắc muốn xóa quy định này?')) {
+            alert('Đã xóa quy định thành công!');
+            refreshData();
+        }
+    }
+
+    function saveQuyDinh() {
+        alert('Đã lưu quy định thành công!');
+        quyDinhModal.hide();
+        refreshData();
+    }
+</script>
