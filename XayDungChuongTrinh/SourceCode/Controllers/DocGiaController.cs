@@ -19,6 +19,20 @@ namespace QuanLyThuVien.Controllers
             _context = context;
         }
 
+        public override void OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+            var userId = GetCurrentUserId();
+            if (userId.HasValue)
+            {
+                ViewBag.UnreadCount = _context.ThongBaos.Count(t => t.MaNguoiDung == userId.Value && t.DaDoc == 0);
+            }
+            else
+            {
+                ViewBag.UnreadCount = 0;
+            }
+        }
+
         private int? GetCurrentDocGiaId()
         {
             var maNguoiDung = HttpContext.Session.GetString("MaNguoiDung");
@@ -320,6 +334,58 @@ namespace QuanLyThuVien.Controllers
             }
             _context.SaveChanges();
             return Json(new { success = true });
+        }
+
+        [HttpGet]
+        public IActionResult GetNotificationsJson()
+        {
+            var userId = GetCurrentUserId();
+            if (!userId.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            var thongBaos = _context.ThongBaos
+                .Where(t => t.MaNguoiDung == userId.Value)
+                .OrderByDescending(t => t.NgayTao)
+                .Take(15)
+                .Select(t => new {
+                    t.MaThongBao,
+                    t.TieuDe,
+                    t.NoiDung,
+                    t.DaDoc,
+                    NgayTao = t.NgayTao.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ThoiGianText = GetRelativeTime(t.NgayTao)
+                })
+                .ToList();
+
+            return Json(new { success = true, data = thongBaos });
+        }
+
+        [HttpPost]
+        public IActionResult DanhDauDaDoc([FromBody] Dictionary<string, int> data)
+        {
+            var userId = GetCurrentUserId();
+            if (!userId.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            if (data == null || !data.ContainsKey("id")) return Json(new { success = false, message = "Lỗi!" });
+            var id = data["id"];
+
+            var t = _context.ThongBaos.FirstOrDefault(x => x.MaThongBao == id && x.MaNguoiDung == userId.Value);
+            if (t != null)
+            {
+                t.DaDoc = 1;
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "Không tìm thấy thông báo!" });
+        }
+
+        private static string GetRelativeTime(DateTime dt)
+        {
+            var span = DateTime.Now - dt;
+            if (span.TotalDays > 30) return dt.ToString("dd/MM/yyyy");
+            if (span.TotalDays >= 1) return $"{(int)span.TotalDays} ngày trước";
+            if (span.TotalHours >= 1) return $"{(int)span.TotalHours} giờ trước";
+            if (span.TotalMinutes >= 1) return $"{(int)span.TotalMinutes} phút trước";
+            return "Vừa xong";
         }
 
         [HttpPost]
