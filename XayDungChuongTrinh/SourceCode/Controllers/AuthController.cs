@@ -40,12 +40,16 @@ namespace QuanLyThuVien.Controllers
                 HttpContext.Session.SetString("HoTen", user.HoTen);
                 HttpContext.Session.SetString("Quyen", ((int)user.Quyen).ToString());
 
+                // Lưu thông báo thành công dạng Toast
+                TempData["SuccessMessage"] = $"Chào mừng {user.HoTen} đã quay trở lại!";
+
                 // Redirect theo quyền
                 return RedirectBasedOnRole(user.Quyen);
             }
             else
             {
                 ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng!";
+                TempData["ErrorMessage"] = "Tên đăng nhập hoặc mật khẩu không đúng!";
                 return View();
             }
         }
@@ -55,6 +59,7 @@ namespace QuanLyThuVien.Controllers
         {
             // Xóa session
             HttpContext.Session.Clear();
+            TempData["SuccessMessage"] = "Bạn đã đăng xuất tài khoản thành công!";
             return RedirectToAction("Login");
         }
 
