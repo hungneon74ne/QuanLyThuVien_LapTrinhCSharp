@@ -118,21 +118,32 @@
         theLoaiModal.show();
     }
 
-    function editTheLoai(id) {
+    async function editTheLoai(id) {
+        const res = await fetch(`/ThuThu/GetTheLoaiById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
         document.getElementById('theLoaiModalTitle').textContent = 'Sửa thể loại';
+        document.getElementById('maTheLoai').value = result.data.maTheLoai;
+        document.getElementById('tenTheLoai').value = result.data.tenTheLoai || '';
         theLoaiModal.show();
     }
 
     function deleteTheLoai(id) {
-        if (confirm('Bạn có chắc muốn xóa thể loại này?')) {
-            alert('Đã xóa thể loại thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa thể loại này không?', async () => {
+            const result = await apiPost('/ThuThu/DeleteTheLoai', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
 
-    function saveTheLoai() {
-        alert('Đã lưu thể loại thành công!');
-        theLoaiModal.hide();
-        refreshData();
+    async function saveTheLoai() {
+        const form = document.getElementById('theLoaiForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const result = await apiPost('/ThuThu/SaveTheLoai', {
+            maTheLoai: parseInt(document.getElementById('maTheLoai').value) || 0,
+            tenTheLoai: document.getElementById('tenTheLoai').value
+        });
+        if (result.success) { showToast(result.message, 'success'); theLoaiModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>
