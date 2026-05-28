@@ -76,77 +76,43 @@
         </div>
 
         <div class="row">
-            <!-- Book 1 -->
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Cho tôi xin một vé đi tuổi thơ</h5>
-                        <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Văn học</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book 2 -->
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Harry Potter và Hòn đá Phù thủy</h5>
-                        <p class="card-text text-muted mb-2">J.K. Rowling</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Kinh dị</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.8</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+            @if (ViewBag.FeaturedBooks != null && ((dynamic)ViewBag.FeaturedBooks).Count > 0)
+            {
+                @foreach (var sach in ViewBag.FeaturedBooks)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card book-card">
+                            @if (!string.IsNullOrEmpty(sach.HinhAnh))
+                            {
+                                <img src="@sach.HinhAnh" class="card-img-top" alt="@sach.TenSach">
+                            }
+                            else
+                            {
+                                <div style="height: 400px; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-book text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">@sach.TenSach</h5>
+                                <p class="card-text text-muted mb-2">@sach.TacGia?.TenTacGia</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary">@sach.TheLoai?.TenTheLoai</span>
+                                    <small class="text-muted">@sach.GiaTien.ToString("N0") đ</small>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/DocGia/ChiTietSach/@sach.MaSach" class="text-decoration-none">Xem chi tiết</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Chưa có sách nào</p>
                 </div>
-            </div>
-
-            <!-- Book 3 -->
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Chí Phèo</h5>
-                        <p class="card-text text-muted mb-2">Nam Cao</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Văn học cổ điển</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.3</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Book 4 -->
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Đắc Nhân Tâm</h5>
-                        <p class="card-text text-muted mb-2">Dale Carnegie</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Tự giúp bản thân</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.9</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
@@ -154,70 +120,43 @@
     <div class="mb-5">
         <h2 class="fw-bold mb-4 text-center py-3" style="background: #e9ecef; font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Playfair Display', serif;">Văn Học</h2>
         <div class="row">
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Cho tôi xin một vé đi tuổi thơ</h5>
-                        <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Văn học</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Chí Phèo</h5>
-                        <p class="card-text text-muted mb-2">Nam Cao</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Văn học cổ điển</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.3</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Nhà Giả Kim</h5>
-                        <p class="card-text text-muted mb-2">Paulo Coelho</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Tiểu thuyết</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.6</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+            @if (ViewBag.VanHocBooks != null && ((dynamic)ViewBag.VanHocBooks).Count > 0)
+            {
+                @foreach (var sach in ViewBag.VanHocBooks)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card book-card">
+                            @if (!string.IsNullOrEmpty(sach.HinhAnh))
+                            {
+                                <img src="@sach.HinhAnh" class="card-img-top" alt="@sach.TenSach">
+                            }
+                            else
+                            {
+                                <div style="height: 400px; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-book text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">@sach.TenSach</h5>
+                                <p class="card-text text-muted mb-2">@sach.TacGia?.TenTacGia</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary">@sach.TheLoai?.TenTheLoai</span>
+                                    <small class="text-muted">@sach.GiaTien.ToString("N0") đ</small>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/DocGia/ChiTietSach/@sach.MaSach" class="text-decoration-none">Xem chi tiết</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Chưa có sách văn học nào</p>
                 </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Tôi thấy hoa vàng trên cỏ xanh</h5>
-                        <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Văn học</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.7</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
@@ -225,70 +164,43 @@
     <div class="mb-5">
         <h2 class="fw-bold mb-4 text-center py-3" style="background: #e9ecef; font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Playfair Display', serif;">Khoa Học</h2>
         <div class="row">
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Sapiens: Lược sử loài người</h5>
-                        <p class="card-text text-muted mb-2">Yuval Noah Harari</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Lịch sử</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.7</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Tư duy nhanh và chậm</h5>
-                        <p class="card-text text-muted mb-2">Daniel Kahneman</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Tâm lý học</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1555446815-9f9be8578d7a?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Lược sử thời gian</h5>
-                        <p class="card-text text-muted mb-2">Stephen Hawking</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Vật lý</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.8</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+            @if (ViewBag.KhoaHocBooks != null && ((dynamic)ViewBag.KhoaHocBooks).Count > 0)
+            {
+                @foreach (var sach in ViewBag.KhoaHocBooks)
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="card book-card">
+                            @if (!string.IsNullOrEmpty(sach.HinhAnh))
+                            {
+                                <img src="@sach.HinhAnh" class="card-img-top" alt="@sach.TenSach">
+                            }
+                            else
+                            {
+                                <div style="height: 400px; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-book text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">@sach.TenSach</h5>
+                                <p class="card-text text-muted mb-2">@sach.TacGia?.TenTacGia</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary">@sach.TheLoai?.TenTheLoai</span>
+                                    <small class="text-muted">@sach.GiaTien.ToString("N0") đ</small>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="/DocGia/ChiTietSach/@sach.MaSach" class="text-decoration-none">Xem chi tiết</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Chưa có sách khoa học nào</p>
                 </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card book-card">
-                    <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400" class="card-img-top" alt="Sách">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Gen: Một lịch sử di truyền</h5>
-                        <p class="card-text text-muted mb-2">Siddhartha Mukherjee</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Sinh học</span>
-                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.6</small>
-                        </div>
-                        <div class="mt-3">
-                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
