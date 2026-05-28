@@ -99,67 +99,41 @@
 </div>
 
 <script>
-    document.getElementById('guiDen').addEventListener('change', function() {
-        const docGiaSelect = document.getElementById('docGiaSelect');
-        if (this.value === 'specific') {
-            docGiaSelect.style.display = 'block';
-        } else {
-            docGiaSelect.style.display = 'none';
+    document.getElementById('guiDen').addEventListener('change', async function() {
+        const show = this.value === 'specific';
+        document.getElementById('docGiaSelect').style.display = show ? 'block' : 'none';
+        if (show) {
+            const r = await fetch('/ThuThu/GetDocGiaList');
+            if (r.ok) {
+                const data = await r.json();
+                const sel = document.getElementById('maDocGia');
+                sel.innerHTML = '';
+                data.forEach(dg => {
+                    const opt = document.createElement('option');
+                    opt.value = dg.maDocGia;
+                    opt.textContent = dg.tenDocGia + ' (' + dg.soDienThoai + ')';
+                    sel.appendChild(opt);
+                });
+            }
         }
     });
 
-    function sendNotification(event) {
+    async function sendNotification(event) {
         event.preventDefault();
-        
         const tieuDe = document.getElementById('tieuDe').value;
         const guiDen = document.getElementById('guiDen').value;
         const noiDung = document.getElementById('noiDung').value;
-        const maDocGia = document.getElementById('maDocGia').value;
-        
-        if (!tieuDe.trim() || !noiDung.trim()) {
-            alert('Vui lòng nhập tiêu đề và nội dung!');
-            return;
-        }
-        
-        fetch('/ThuThu/GuiThongBao', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                tieuDe: tieuDe,
-                guiDen: guiDen,
-                noiDung: noiDung,
-                maDocGia: maDocGia
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Đã gửi thông báo thành công!');
-                location.reload();
-            } else {
-                alert(data.message || 'Có lỗi xảy ra!');
-            }
-        })
-        .catch(() => alert('Có lỗi xảy ra!'));
+        const maDocGia = parseInt(document.getElementById('maDocGia').value) || 0;
+        const result = await apiPost('/ThuThu/GuiThongBao', { tieuDe, guiDen, noiDung, maDocGia });
+        if (result.success) { showToast(result.message, 'success'); setTimeout(() => location.reload(), 1200); }
+        else showToast(result.message || 'Có lỗi xảy ra!', 'danger');
     }
 
     function deleteNotification(id) {
-        if (confirm('Bạn có chắc muốn xóa thông báo này?')) {
-            fetch('/ThuThu/XoaThongBao', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Đã xóa thông báo thành công!');
-                    location.reload();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra!');
-                }
-            })
-            .catch(() => alert('Có lỗi xảy ra!'));
-        }
+        showConfirm('Bạn có chắc muốn xóa thông báo này?', async () => {
+            const result = await apiPost('/ThuThu/XoaThongBao', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(() => location.reload(), 1000); }
+            else showToast(result.message || 'Có lỗi xảy ra!', 'danger');
+        });
     }
 </script>
