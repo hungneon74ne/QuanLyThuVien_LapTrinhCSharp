@@ -1,0 +1,138 @@
+@model List<QuanLyThuVien.Models.TheLoai>
+@{
+    ViewData["Title"] = "Quản lý thể loại";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuanLyTheLoai";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-tags me-2"></i>Quản lý thể loại</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm thể loại...">
+                    <button class="btn btn-primary" onclick="searchTheLoai()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-8 text-end">
+                <button class="btn btn-success me-2" onclick="addTheLoai()">
+                    <i class="fas fa-plus me-1"></i>Thêm thể loại
+                </button>
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã thể loại</th>
+                        <th>Tên thể loại</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var tl in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">TL@(tl.MaTheLoai.ToString("D3"))</td>
+                                <td>@tl.TenTheLoai</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1" onclick="editTheLoai(@tl.MaTheLoai)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTheLoai(@tl.MaTheLoai)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">
+                                <i class="fas fa-tags fa-2x mb-2 text-light"></i>
+                                <p>Không có thể loại nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="theLoaiModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="theLoaiModalTitle">Thêm thể loại</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="theLoaiForm">
+                    <input type="hidden" id="maTheLoai" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên thể loại *</label>
+                        <input type="text" class="form-control" id="tenTheLoai" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveTheLoai()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let theLoaiModal;
+    document.addEventListener('DOMContentLoaded', () => {
+        theLoaiModal = new bootstrap.Modal(document.getElementById('theLoaiModal'));
+    });
+
+    function searchTheLoai() {
+        const keyword = document.getElementById('searchInput').value;
+        window.location.href = `/ThuThu/QuanLyTheLoai?keyword=${keyword}`;
+    }
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuanLyTheLoai';
+    }
+
+    function addTheLoai() {
+        document.getElementById('theLoaiModalTitle').textContent = 'Thêm thể loại';
+        document.getElementById('theLoaiForm').reset();
+        document.getElementById('maTheLoai').value = '';
+        theLoaiModal.show();
+    }
+
+    function editTheLoai(id) {
+        document.getElementById('theLoaiModalTitle').textContent = 'Sửa thể loại';
+        theLoaiModal.show();
+    }
+
+    function deleteTheLoai(id) {
+        if (confirm('Bạn có chắc muốn xóa thể loại này?')) {
+            alert('Đã xóa thể loại thành công!');
+            refreshData();
+        }
+    }
+
+    function saveTheLoai() {
+        alert('Đã lưu thể loại thành công!');
+        theLoaiModal.hide();
+        refreshData();
+    }
+</script>

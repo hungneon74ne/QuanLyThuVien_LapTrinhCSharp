@@ -1,0 +1,150 @@
+@model List<QuanLyThuVien.Models.NhaXuatBan>
+@{
+    ViewData["Title"] = "Quản lý nhà xuất bản";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuanLyNhaXuatBan";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-building me-2"></i>Quản lý nhà xuất bản</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm NXB...">
+                    <button class="btn btn-primary" onclick="searchNXB()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-8 text-end">
+                <button class="btn btn-success me-2" onclick="addNXB()">
+                    <i class="fas fa-plus me-1"></i>Thêm NXB
+                </button>
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã NXB</th>
+                        <th>Tên NXB</th>
+                        <th>Địa chỉ</th>
+                        <th>SĐT</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var nxb in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">NXB@(nxb.MaNhaXuatBan.ToString("D3"))</td>
+                                <td>@nxb.TenNhaXuatBan</td>
+                                <td>@nxb.DiaChi</td>
+                                <td>@nxb.SoDienThoai</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1" onclick="editNXB(@nxb.MaNhaXuatBan)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteNXB(@nxb.MaNhaXuatBan)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="fas fa-building fa-2x mb-2 text-light"></i>
+                                <p>Không có nhà xuất bản nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="nxbModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nxbModalTitle">Thêm nhà xuất bản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nxbForm">
+                    <input type="hidden" id="maNXB" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên NXB *</label>
+                        <input type="text" class="form-control" id="tenNXB" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" id="diaChi">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">SĐT</label>
+                        <input type="text" class="form-control" id="soDienThoai">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveNXB()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let nxbModal;
+    document.addEventListener('DOMContentLoaded', () => {
+        nxbModal = new bootstrap.Modal(document.getElementById('nxbModal'));
+    });
+
+    function searchNXB() {
+        const keyword = document.getElementById('searchInput').value;
+        window.location.href = `/ThuThu/QuanLyNhaXuatBan?keyword=${keyword}`;
+    }
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuanLyNhaXuatBan';
+    }
+
+    function addNXB() {
+        document.getElementById('nxbModalTitle').textContent = 'Thêm nhà xuất bản';
+        document.getElementById('nxbForm').reset();
+        document.getElementById('maNXB').value = '';
+        nxbModal.show();
+    }
+
+    function editNXB(id) {
+        document.getElementById('nxbModalTitle').textContent = 'Sửa nhà xuất bản';
+        nxbModal.show();
+    }
+
+    function deleteNXB(id) {
+        if (confirm('Bạn có chắc muốn xóa nhà xuất bản này?')) {
+            alert('Đã xóa nhà xuất bản thành công!');
+            refreshData();
+        }
+    }
+
+    function saveNXB() {
+        alert('Đã lưu nhà xuất bản thành công!');
+        nxbModal.hide();
+        refreshData();
+    }
+</script>

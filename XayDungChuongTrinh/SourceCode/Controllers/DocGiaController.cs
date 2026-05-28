@@ -139,38 +139,6 @@ namespace QuanLyThuVien.Controllers
             return RedirectToAction("ThongTinCaNhan");
         }
 
-        public IActionResult DanhSachSach(int? theLoai, int? tacGia, int? nhaXuatBan, string keyword)
-        {
-            var maDocGia = GetCurrentDocGiaId();
-            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
-
-            var query = _context.Sachs
-                .Include(s => s.TacGia)
-                .Include(s => s.TheLoai)
-                .Include(s => s.NhaXuatBan)
-                .Where(s => s.DaXoa == 0);
-
-            if (theLoai.HasValue) query = query.Where(s => s.MaTheLoai == theLoai.Value);
-            if (tacGia.HasValue) query = query.Where(s => s.MaTacGia == tacGia.Value);
-            if (nhaXuatBan.HasValue) query = query.Where(s => s.MaNhaXuatBan == nhaXuatBan.Value);
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                query = query.Where(s => s.TenSach.Contains(keyword) || s.ISBN.Contains(keyword));
-            }
-
-            ViewBag.TheLoais = _context.TheLoais.Where(t => t.DaXoa == 0).ToList();
-            ViewBag.TacGias = _context.TacGias.Where(t => t.DaXoa == 0).ToList();
-            ViewBag.NhaXuatBans = _context.NhaXuatBans.Where(t => t.DaXoa == 0).ToList();
-
-            ViewBag.SelectedTheLoai = theLoai;
-            ViewBag.SelectedTacGia = tacGia;
-            ViewBag.SelectedNhaXuatBan = nhaXuatBan;
-            ViewBag.Keyword = keyword;
-            ViewBag.FavoriteBookIds = _context.SachYeuThichs.Where(s => s.MaDocGia == maDocGia.Value).Select(s => s.MaSach).ToList();
-
-            return View(query.ToList());
-        }
-
         public IActionResult ChiTietSach(int id)
         {
             var maDocGia = GetCurrentDocGiaId();

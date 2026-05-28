@@ -1,0 +1,165 @@
+@model List<QuanLyThuVien.Models.ThongBao>
+@{
+    ViewData["Title"] = "Thông báo";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "ThongBao";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-bell me-2"></i>Quản lý thông báo</h4>
+    </div>
+    <div class="card-body p-4">
+        <!-- Form gửi thông báo -->
+        <div class="card mb-4 border-0 shadow-sm" style="border-radius: 12px;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane me-2"></i>Gửi thông báo mới</h5>
+                <form onsubmit="sendNotification(event)">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tiêu đề *</label>
+                            <input type="text" class="form-control" id="tieuDe" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Gửi đến</label>
+                            <select class="form-select" id="guiDen">
+                                <option value="all">Tất cả độc giả</option>
+                                <option value="specific">Độc giả cụ thể</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="docGiaSelect" style="display: none;">
+                        <label class="form-label">Chọn độc giả</label>
+                        <select class="form-select" id="maDocGia" multiple>
+                            <!-- Load from API -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nội dung *</label>
+                        <textarea class="form-control" id="noiDung" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-1"></i>Gửi thông báo
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Danh sách thông báo -->
+        <h5 class="fw-bold mb-3"><i class="fas fa-list me-2"></i>Lịch sử thông báo</h5>
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Người nhận</th>
+                            <th>Ngày gửi</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tb in Model)
+                        {
+                            <tr>
+                                <td>@tb.TieuDe</td>
+                                <td>@tb.NguoiDung?.HoTen</td>
+                                <td>@tb.NgayTao.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (tb.DaDoc == 0)
+                                    {
+                                        <span class="badge badge-warning">Chưa đọc</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-success">Đã đọc</span>
+                                    }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteNotification(@tb.MaThongBao)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4 text-muted">
+                <i class="fas fa-bell fa-2x mb-2 text-light"></i>
+                <p>Chưa có thông báo nào.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.getElementById('guiDen').addEventListener('change', function() {
+        const docGiaSelect = document.getElementById('docGiaSelect');
+        if (this.value === 'specific') {
+            docGiaSelect.style.display = 'block';
+        } else {
+            docGiaSelect.style.display = 'none';
+        }
+    });
+
+    function sendNotification(event) {
+        event.preventDefault();
+        
+        const tieuDe = document.getElementById('tieuDe').value;
+        const guiDen = document.getElementById('guiDen').value;
+        const noiDung = document.getElementById('noiDung').value;
+        const maDocGia = document.getElementById('maDocGia').value;
+        
+        if (!tieuDe.trim() || !noiDung.trim()) {
+            alert('Vui lòng nhập tiêu đề và nội dung!');
+            return;
+        }
+        
+        fetch('/ThuThu/GuiThongBao', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                tieuDe: tieuDe,
+                guiDen: guiDen,
+                noiDung: noiDung,
+                maDocGia: maDocGia
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Đã gửi thông báo thành công!');
+                location.reload();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra!');
+            }
+        })
+        .catch(() => alert('Có lỗi xảy ra!'));
+    }
+
+    function deleteNotification(id) {
+        if (confirm('Bạn có chắc muốn xóa thông báo này?')) {
+            fetch('/ThuThu/XoaThongBao', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Đã xóa thông báo thành công!');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra!');
+                }
+            })
+            .catch(() => alert('Có lỗi xảy ra!'));
+        }
+    }
+</script>

@@ -1,0 +1,223 @@
+@{
+    ViewData["Title"] = "Dashboard - Thủ thư";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "Dashboard";
+}
+
+<style>
+    .welcome-banner {
+        background: linear-gradient(135deg, #0066cc 0%, #0099ff 100%);
+        border-radius: 12px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 20px rgba(0, 102, 204, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .welcome-banner::after {
+        content: '\f5db';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 30px;
+        bottom: -20px;
+        font-size: 150px;
+        color: rgba(255, 255, 255, 0.1);
+    }
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        transition: transform 0.3s;
+        border-left: 5px solid #0066cc;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-icon {
+        background: rgba(0, 102, 204, 0.1);
+        color: #0066cc;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-right: 20px;
+    }
+    .stat-details h3 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+    }
+    .stat-details p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0066cc;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eaeaea;
+    }
+    .custom-list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .custom-list-group-item:last-child {
+        border-bottom: none;
+    }
+</style>
+
+<div class="welcome-banner">
+    <h2 class="fw-bold mb-2">Xin chào, @(ViewBag.ThuThu?.HoTen ?? "Thủ thư")!</h2>
+    <p class="mb-0 fs-5"><i class="fas fa-id-card me-2"></i>Mã nhân viên: <strong>NV@(ViewBag.ThuThu?.MaNguoiDung.ToString("D3"))</strong></p>
+    <p class="mb-0 mt-2 text-white-50"><i class="fas fa-envelope me-2"></i>Email: @(ViewBag.ThuThu?.Email ?? "Chưa có")</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left-color: #f39c12;">
+            <div class="stat-icon" style="color: #f39c12; background: rgba(243, 156, 18, 0.1);">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-details">
+                <h3>@ViewBag.TongDocGia</h3>
+                <p>Tổng độc giả</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left-color: #e74c3c;">
+            <div class="stat-icon" style="color: #e74c3c; background: rgba(231, 76, 60, 0.1);">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-details">
+                <h3>@ViewBag.TongSach</h3>
+                <p>Tổng sách</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left-color: #27ae60;">
+            <div class="stat-icon" style="color: #27ae60; background: rgba(39, 174, 96, 0.1);">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stat-details">
+                <h3>@ViewBag.SachDangMuon</h3>
+                <p>Sách đang mượn</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left-color: #9b59b6;">
+            <div class="stat-icon" style="color: #9b59b6; background: rgba(155, 89, 182, 0.1);">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-details">
+                <h3>@ViewBag.YeuCauChoDuyet</h3>
+                <p>Yêu cầu chờ duyệt</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left-color: #e67e22;">
+            <div class="stat-icon" style="color: #e67e22; background: rgba(230, 126, 34, 0.1);">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="stat-details">
+                <h3>@ViewBag.SachQuaHan</h3>
+                <p>Sách quá hạn</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card content-card h-100">
+            <div class="card-body p-4">
+                <h4 class="section-title"><i class="fas fa-inbox me-2 text-warning"></i>Yêu cầu mượn gần đây</h4>
+                @if (ViewBag.RecentRequests != null && ((List<QuanLyThuVien.Models.PhieuMuon>)ViewBag.RecentRequests).Count > 0)
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var pm in (List<QuanLyThuVien.Models.PhieuMuon>)ViewBag.RecentRequests)
+                        {
+                            <li class="custom-list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Phiếu PM@(pm.MaPhieuMuon.ToString("D3"))</h6>
+                                    <small class="text-muted">@pm.DocGia?.NguoiDung?.HoTen</small>
+                                </div>
+                                <div>
+                                    <small class="text-muted">@pm.NgayMuon.ToString("dd/MM/yyyy")</small>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <div class="text-center mt-3">
+                        <a href="/ThuThu/YeuCauMuon" class="text-decoration-none fw-bold" style="color: #0066cc;">Xem tất cả <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2 text-light"></i>
+                        <p>Không có yêu cầu nào.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card content-card h-100">
+            <div class="card-body p-4">
+                <h4 class="section-title"><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Sách quá hạn</h4>
+                @if (ViewBag.OverdueBooks != null && ((List<QuanLyThuVien.Models.ChiTietPhieuMuon>)ViewBag.OverdueBooks).Count > 0)
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var ct in (List<QuanLyThuVien.Models.ChiTietPhieuMuon>)ViewBag.OverdueBooks)
+                        {
+                            <li class="custom-list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-danger">@ct.Sach?.TenSach</h6>
+                                    <small class="text-muted">@ct.PhieuMuon?.DocGia?.NguoiDung?.HoTen</small>
+                                </div>
+                                <div>
+                                    <small class="text-danger fw-bold">Qua hạn @((DateTime.Now - ct.PhieuMuon.HanTra.Value).Days) ngày</small>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <div class="text-center mt-3">
+                        <a href="/ThuThu/QuaHan" class="text-decoration-none fw-bold" style="color: #0066cc;">Xem chi tiết <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-2 text-light"></i>
+                        <p>Không có sách quá hạn.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

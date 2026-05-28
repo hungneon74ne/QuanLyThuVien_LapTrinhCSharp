@@ -1,0 +1,73 @@
+@model List<QuanLyThuVien.Models.ChiTietPhieuMuon>
+@{
+    ViewData["Title"] = "Phiếu đang mượn";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "PhieuDangMuon";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-book-open me-2"></i>Phiếu đang mượn</h4>
+    </div>
+    <div class="card-body p-4">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Mã phiếu</th>
+                            <th>Người mượn</th>
+                            <th>Sách</th>
+                            <th>Ngày mượn</th>
+                            <th>Hạn trả</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ct in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(ct.Sach?.HinhAnh))
+                                    {
+                                        <img src="@ct.Sach.HinhAnh" alt="@ct.Sach.TenSach" style="width: 40px; height: 56px; object-fit: cover; border-radius: 4px;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 40px; height: 56px; background: #e0e0e0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-book text-muted" style="font-size: 12px;"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="fw-bold">PM@(ct.PhieuMuon?.MaPhieuMuon.ToString("D3"))</td>
+                                <td>@ct.PhieuMuon?.DocGia?.NguoiDung?.HoTen</td>
+                                <td>@ct.Sach?.TenSach</td>
+                                <td>@ct.PhieuMuon?.NgayMuon.ToString("dd/MM/yyyy")</td>
+                                <td>@ct.PhieuMuon?.HanTra?.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <span class="badge badge-success">Đang mượn</span>
+                                </td>
+                                <td>
+                                    <a href="/ThuThu/TraSach?chiTietId=@ct.MaChiTiet" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-undo me-1"></i>Xử lý trả
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-book-open fa-4x mb-3 text-muted"></i>
+                <h5 class="text-muted">Không có phiếu mượn nào đang hoạt động</h5>
+                <p class="text-muted">Tất cả sách đã được trả.</p>
+            </div>
+        }
+    </div>
+</div>

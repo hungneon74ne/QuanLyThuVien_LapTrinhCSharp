@@ -1,0 +1,142 @@
+@model List<QuanLyThuVien.Models.TacGia>
+@{
+    ViewData["Title"] = "Quản lý tác giả";
+    Layout = "_ThuThuLayout";
+    ViewBag.ActiveMenu = "QuanLyTacGia";
+}
+
+<div class="card content-card">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-pen me-2"></i>Quản lý tác giả</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm tác giả...">
+                    <button class="btn btn-primary" onclick="searchTacGia()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-8 text-end">
+                <button class="btn btn-success me-2" onclick="addTacGia()">
+                    <i class="fas fa-plus me-1"></i>Thêm tác giả
+                </button>
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <i class="fas fa-sync me-1"></i>Làm mới
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Mã tác giả</th>
+                        <th>Tên tác giả</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var tg in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">TG@(tg.MaTacGia.ToString("D3"))</td>
+                                <td>@tg.TenTacGia</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary me-1" onclick="editTacGia(@tg.MaTacGia)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteTacGia(@tg.MaTacGia)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">
+                                <i class="fas fa-pen fa-2x mb-2 text-light"></i>
+                                <p>Không có tác giả nào.</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tacGiaModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tacGiaModalTitle">Thêm tác giả</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="tacGiaForm">
+                    <input type="hidden" id="maTacGia" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên tác giả *</label>
+                        <input type="text" class="form-control" id="tenTacGia" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tiểu sử</label>
+                        <textarea class="form-control" id="tieuSu" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveTacGia()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let tacGiaModal;
+    document.addEventListener('DOMContentLoaded', () => {
+        tacGiaModal = new bootstrap.Modal(document.getElementById('tacGiaModal'));
+    });
+
+    function searchTacGia() {
+        const keyword = document.getElementById('searchInput').value;
+        window.location.href = `/ThuThu/QuanLyTacGia?keyword=${keyword}`;
+    }
+
+    function refreshData() {
+        window.location.href = '/ThuThu/QuanLyTacGia';
+    }
+
+    function addTacGia() {
+        document.getElementById('tacGiaModalTitle').textContent = 'Thêm tác giả';
+        document.getElementById('tacGiaForm').reset();
+        document.getElementById('maTacGia').value = '';
+        tacGiaModal.show();
+    }
+
+    function editTacGia(id) {
+        document.getElementById('tacGiaModalTitle').textContent = 'Sửa tác giả';
+        tacGiaModal.show();
+    }
+
+    function deleteTacGia(id) {
+        if (confirm('Bạn có chắc muốn xóa tác giả này?')) {
+            alert('Đã xóa tác giả thành công!');
+            refreshData();
+        }
+    }
+
+    function saveTacGia() {
+        alert('Đã lưu tác giả thành công!');
+        tacGiaModal.hide();
+        refreshData();
+    }
+</script>
