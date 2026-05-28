@@ -1,0 +1,85 @@
+@model List<QuanLyThuVien.Models.NguoiDung>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "_AdminLayout";
+    ViewBag.ActiveMenu = "QuanLyNguoiDung";
+}
+
+<div class="card content-card border-0">
+    <div class="card-header content-header py-3">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-users-cog me-2"></i>Quản lý tài khoản hệ thống</h4>
+    </div>
+    <div class="card-body p-4">
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Mã ND</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>SĐT</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold">@user.MaNguoiDung</td>
+                                <td>@user.TenDangNhap</td>
+                                <td>@user.HoTen</td>
+                                <td>@user.SoDienThoai</td>
+                                <td>@user.Email</td>
+                                <td>
+                                    @if (user.Quyen == QuanLyThuVien.Enums.QuyenNguoiDung.Admin)
+                                    {
+                                        <span class="badge badge-danger">Admin</span>
+                                    }
+                                    else if (user.Quyen == QuanLyThuVien.Enums.QuyenNguoiDung.ThuThu)
+                                    {
+                                        <span class="badge badge-info">Thủ thư</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.TrangThai == QuanLyThuVien.Enums.TrangThaiTaiKhoan.HoatDong)
+                                    {
+                                        <span class="badge badge-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-danger">Khóa</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.Quyen != QuanLyThuVien.Enums.QuyenNguoiDung.Admin)
+                                    {
+                                        <a href="/Admin/ToggleUserStatus/@user.MaNguoiDung" class="btn btn-sm @(user.TrangThai == QuanLyThuVien.Enums.TrangThaiTaiKhoan.HoatDong ? "btn-warning" : "btn-success")">
+                                            <i class="fas fa-@(user.TrangThai == QuanLyThuVien.Enums.TrangThaiTaiKhoan.HoatDong ? "lock" : "unlock")"></i>
+                                            @(user.TrangThai == QuanLyThuVien.Enums.TrangThaiTaiKhoan.HoatDong ? "Khóa" : "Mở")
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-users-cog fa-4x mb-3 text-muted"></i>
+                <h5 class="text-muted">Không có tài khoản nào</h5>
+            </div>
+        }
+    </div>
+</div>
