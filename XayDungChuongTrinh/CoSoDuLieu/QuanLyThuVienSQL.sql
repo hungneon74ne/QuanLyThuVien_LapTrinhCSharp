@@ -344,9 +344,18 @@ VALUES
 INSERT INTO sach 
 (ISBN, TenSach, HinhAnh, MaTacGia, MaTheLoai, MaNhaXuatBan, GiaTien, NamXuatBan, SoTrang, SoLuongTong, SoLuongHienCo, MoTa, DaXoa)
 VALUES
-('978604100001', 'Cho tôi xin một vé đi tuổi thơ', 'sach1.jpg', 1, 2, 1, 85000, 2008, 220, 10, 10, 'Tác phẩm nổi tiếng của Nguyễn Nhật Ánh.', 0),
-('978604100002', 'Chí Phèo', 'sach2.jpg', 2, 1, 3, 50000, 1941, 150, 8, 8, 'Tác phẩm văn học hiện thực của Nam Cao.', 0),
-('978604100003', 'Harry Potter và Hòn đá Phù thủy', 'sach3.jpg', 3, 3, 2, 120000, 1997, 350, 5, 5, 'Tiểu thuyết giả tưởng nổi tiếng.', 0);
+('978604100001', 'Cho tôi xin một vé đi tuổi thơ', '/images/books/02d05cc9-7554-471e-82b1-2fc9f6d25c59.webp', 1, 2, 1, 85000, 2008, 220, 10, 10, 'Tác phẩm nổi tiếng của Nguyễn Nhật Ánh.', 0),
+('978604100002', 'Chí Phèo', '/images/books/0862d15c-ffa1-4c0a-a34f-ef423541eb19.webp', 2, 1, 3, 50000, 1941, 150, 8, 8, 'Tác phẩm văn học hiện thực của Nam Cao.', 0),
+('978604100003', 'Harry Potter và Hòn đá Phù thủy', '/images/books/191bef80-3ac8-47e8-bf5b-17cfff1c72fc.webp', 3, 3, 2, 120000, 1997, 350, 5, 5, 'Tiểu thuyết giả tưởng nổi tiếng.', 0),
+('978604100004', 'Đắc Nhân Tâm', '/images/books/2c6108a8-5947-40c8-ad71-2e759983ce7e.webp', 1, 2, 1, 95000, 1936, 280, 15, 12, 'Cuốn sách kinh điển về nghệ thuật giao tiếp.', 0),
+('978604100005', 'Nhà Giả Kim', '/images/books/384e8ba1-c860-4980-949a-58b9bca02b43.webp', 1, 2, 2, 75000, 1988, 200, 20, 18, 'Tiểu thuyết truyền cảm hứng.', 0),
+('978604100006', 'Sapiens: Lược sử loài người', '/images/books/886cf06b-76cd-4d81-9cef-5f680703fa14.webp', 2, 1, 3, 150000, 2011, 450, 10, 8, 'Lịch sử loài người.', 0),
+('978604100007', 'Tư duy nhanh và chậm', '/images/books/bd792243-45e1-4f95-824f-12e15175955b.webp', 2, 1, 1, 180000, 2011, 400, 8, 6, 'Cuốn sách về tâm lý học.', 0),
+('978604100008', 'Lược sử thời gian', '/images/books/d8d8fa10-6858-4af4-b51e-1117e269fa72.webp', 3, 3, 2, 110000, 1988, 250, 12, 10, 'Cuốn sách về vũ trụ.', 0),
+('978604100009', 'Tôi thấy hoa vàng trên cỏ xanh', '/images/books/ecb09d4a-4f17-4a30-84d6-b5ade578fddd.webp', 1, 2, 1, 90000, 2010, 300, 15, 13, 'Tác phẩm mới của Nguyễn Nhật Ánh.', 0),
+('978604100010', 'Gen: Một lịch sử di truyền', '/images/books/f45c2537-bf8e-4b1d-b9f8-14d8ff87ad71.webp', 2, 1, 3, 200000, 2016, 600, 6, 5, 'Lịch sử của gen.', 0),
+('978604100011', 'Nơi đây núi điện đại', '/images/books/noi-day-nui-dien-dai-manga-tap-2-bia.webp', 1, 2, 2, 70000, 2015, 180, 25, 20, 'Truyện tranh nổi tiếng.', 0),
+('978604100012', 'Câu hỏi lớn', '/images/books/tranh-bien-nho-ve-cau-hoi-lon-dieu-gi-khien-cuoc-song-co-y-nghia-bia.webp', 1, 2, 1, 85000, 2014, 220, 18, 15, 'Cuốn sách về ý nghĩa cuộc sống.', 0);
 
 INSERT INTO phieumuon 
 (MaDocGia, HanTra, TienCoc, TrangThai, MaNhanVien, DaXoa)
