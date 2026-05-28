@@ -24,6 +24,7 @@ namespace QuanLyThuVien.Models
         public string MoTa { get; set; }
         public DateTime NgayTao { get; set; }
         public int DaXoa { get; set; }
+        public DateTime? NgayXoa { get; set; }
 
         // Navigation properties
         public TacGia TacGia { get; set; }
