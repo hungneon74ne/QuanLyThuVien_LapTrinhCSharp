@@ -2,77 +2,177 @@
     ViewData["Title"] = "Giới thiệu";
 }
 
-<div class="main-container">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold mb-3">Về Thư viện của chúng tôi</h1>
-        <p class="lead text-muted">Nơi chia sẻ tri thức và khơi dậy niềm đam mê đọc sách</p>
+<style>
+    /* Section Title with Accent Line */
+    .about-title {
+        font-weight: 800;
+        color: #003366;
+        position: relative;
+        padding-bottom: 12px;
+        margin-bottom: 25px;
+    }
+    .about-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: #003366;
+        border-radius: 2px;
+    }
+    .about-title-center::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Stat Highlight Cards */
+    .about-stat-card {
+        background: #fff;
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: 1px solid rgba(0,0,0,0.04);
+    }
+    .about-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 51, 102, 0.05);
+        border-color: rgba(0, 51, 102, 0.1);
+    }
+    .stat-icon-large {
+        font-size: 2.5rem;
+        color: #003366;
+        background: rgba(0, 51, 102, 0.05);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        transition: all 0.3s;
+    }
+    .about-stat-card:hover .stat-icon-large {
+        background: #003366;
+        color: #fff;
+    }
+
+    /* Content Cards */
+    .about-card {
+        background: #fff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+    }
+    
+    /* Interactive Bullet List */
+    .check-list li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px;
+        font-size: 1.05rem;
+        color: #555;
+    }
+    .check-list li i {
+        position: absolute;
+        left: 0;
+        top: 4px;
+        color: #27ae60;
+        font-size: 1.15rem;
+    }
+</style>
+
+<div class="main-container px-2">
+    <!-- Header Hero -->
+    <div class="text-center mb-5 py-4" style="background: rgba(0,51,102,0.03); border-radius: 16px;">
+        <h1 class="fw-extrabold text-primary mb-2" style="font-size: 2.8rem; font-weight: 850; color: #003366;">Về Thư Viện Của Chúng Tôi</h1>
+        <p class="lead text-muted fs-5" style="max-width: 650px; margin: 0 auto; font-weight: 300;">Nơi kết nối đam mê, lan tỏa tri thức và kiến tạo không gian học tập văn minh, hiện đại cho mọi độc giả.</p>
     </div>
 
-    <div class="row mb-5">
-        <div class="col-md-6">
-            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600" class="img-fluid rounded" alt="Library">
-        </div>
-        <div class="col-md-6">
-            <h2 class="fw-bold mb-4">Sứ mệnh của chúng tôi</h2>
-            <p class="mb-3">Thư viện của chúng tôi được thành lập với mục tiêu mang lại tri thức và niềm vui đọc sách cho mọi người. Chúng tôi tin rằng sách không chỉ là nguồn kiến thức mà còn là người bạn đồng hành trong suốt cuộc đời.</p>
-            <p class="mb-3">Với kho tàng hơn 10.000 đầu sách đa dạng thể loại, từ văn học, khoa học, lịch sử cho đến kỹ năng sống, chúng tôi cam kết mang đến cho bạn đọc những trải nghiệm đọc sách thú vị và bổ ích nhất.</p>
-            <p>Đội ngũ nhân viên tận tâm và chuyên nghiệp luôn sẵn sàng hỗ trợ bạn trong việc tìm kiếm và mượn sách.</p>
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-md-4 text-center">
-            <div class="p-4">
-                <i class="fas fa-book feature-icon"></i>
-                <h3 class="fw-bold mb-2">10,000+</h3>
-                <p class="text-muted">Đầu sách</p>
+    <!-- Sứ Mệnh & Hình Ảnh -->
+    <div class="row align-items-center mb-5 g-5">
+        <div class="col-lg-6">
+            <div class="position-relative">
+                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&h=450&fit=crop" class="img-fluid shadow-lg" alt="Library" style="border-radius: 16px; width: 100%; object-fit: cover;">
+                <div class="position-absolute" style="bottom: -20px; right: -20px; width: 100px; height: 100px; background: rgba(0,51,102,0.1); border-radius: 16px; z-index: -1;"></div>
             </div>
         </div>
-        <div class="col-md-4 text-center">
-            <div class="p-4">
-                <i class="fas fa-users feature-icon"></i>
-                <h3 class="fw-bold mb-2">5,000+</h3>
-                <p class="text-muted">Độc giả</p>
-            </div>
-        </div>
-        <div class="col-md-4 text-center">
-            <div class="p-4">
-                <i class="fas fa-calendar-alt feature-icon"></i>
-                <h3 class="fw-bold mb-2">10 năm</h3>
-                <p class="text-muted">Hoạt động</p>
+        <div class="col-lg-6">
+            <h2 class="about-title">Sứ Mệnh Khơi Nguồn Tri Thức</h2>
+            <p class="text-muted fs-5" style="line-height: 1.8; text-align: justify; font-weight: 350;">Thư viện được thành lập với tầm nhìn trở thành trung tâm kết nối tri thức đỉnh cao, truyền cảm hứng văn hóa đọc tích cực trong cộng đồng học thuật và độc giả tự do.</p>
+            <p class="text-muted mb-4" style="line-height: 1.8; text-align: justify; font-weight: 350;">Chúng tôi cung cấp kho tàng tư liệu đa dạng, kết hợp hài hòa giữa sách in truyền thống quý giá và học liệu trực tuyến hiện đại. Đội ngũ thủ thư chuyên nghiệp luôn đồng hành hỗ trợ, kiến tạo trải nghiệm mượn trả và tra cứu thông minh nhất.</p>
+            <div class="d-flex gap-3">
+                <a href="/Home/Books" class="btn btn-primary px-4 py-2 fw-semibold" style="background: #003366; border: none; border-radius: 8px;">Tìm kiếm sách <i class="fas fa-search ms-2 small"></i></a>
+                <a href="/Auth/Login" class="btn btn-outline-primary px-4 py-2 fw-semibold" style="border-radius: 8px;">Gia nhập độc giả</a>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <h2 class="fw-bold mb-4">Tại sao chọn chúng tôi?</h2>
-            <ul class="list-unstyled">
-                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Kho sách đa dạng và được cập nhật thường xuyên</li>
-                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Hệ thống mượn trả sách hiện đại, tiện lợi</li>
-                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Không gian đọc sách thoải mái, yên tĩnh</li>
-                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Đội ngũ nhân viên chuyên nghiệp, thân thiện</li>
-                <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Nhiều chương trình ưu đãi cho độc giả</li>
+    <!-- Số Liệu Ấn Tượng -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="about-stat-card p-4 text-center shadow-sm border-0">
+                <div class="stat-icon-large">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #003366;">10,000+</h3>
+                <p class="text-muted mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px;">Đầu Sách Bản Quyền</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="about-stat-card p-4 text-center shadow-sm border-0">
+                <div class="stat-icon-large">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #003366;">5,000+</h3>
+                <p class="text-muted mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px;">Độc Giả Thường Xuyên</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="about-stat-card p-4 text-center shadow-sm border-0">
+                <div class="stat-icon-large">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #003366;">10 Năm</h3>
+                <p class="text-muted mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px;">Hoạt Động & Phát Triển</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Điểm Mạnh & Giờ Mở Cửa -->
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <h2 class="about-title">Tại Sao Chọn Chúng Tôi?</h2>
+            <ul class="list-unstyled check-list">
+                <li><i class="fas fa-check-circle"></i> Kho sách tuyển chọn đa dạng lĩnh vực và cập nhật hàng tuần.</li>
+                <li><i class="fas fa-check-circle"></i> Trải nghiệm mượn trả trực tuyến thông minh, tối giản mọi thủ tục.</li>
+                <li><i class="fas fa-check-circle"></i> Không gian đọc sách hiện đại, yên tĩnh tuyệt đối cho sự tập trung.</li>
+                <li><i class="fas fa-check-circle"></i> Đội ngũ phục vụ tận tâm, sẵn sàng định hướng thông tin chu đáo.</li>
+                <li><i class="fas fa-check-circle"></i> Hệ thống nhắc hạn trả và bảo lưu tự động thông minh.</li>
             </ul>
         </div>
-        <div class="col-md-6">
-            <h2 class="fw-bold mb-4">Giờ mở cửa</h2>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Thứ 2 - Thứ 6</td>
-                        <td class="fw-bold">8:00 - 20:00</td>
-                    </tr>
-                    <tr>
-                        <td>Thứ 7</td>
-                        <td class="fw-bold">8:00 - 18:00</td>
-                    </tr>
-                    <tr>
-                        <td>Chủ nhật</td>
-                        <td class="fw-bold">9:00 - 17:00</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="col-lg-6">
+            <div class="card about-card shadow-sm p-4 h-100 border-0">
+                <h3 class="about-title" style="font-size: 1.5rem;"><i class="fas fa-clock text-primary me-2"></i>Khung Giờ Mở Cửa</h3>
+                <p class="text-muted small mb-4">Chúng tôi hân hạnh đón tiếp quý bạn đọc vào các khung giờ sau:</p>
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle">
+                        <tbody>
+                            <tr class="border-bottom" style="border-color: #f0f0f0 !important;">
+                                <td class="py-3 text-dark fw-semibold">Thứ 2 - Thứ 6</td>
+                                <td class="py-3 text-end fw-bold text-primary" style="color: #003366 !important;">08:00 - 20:00</td>
+                            </tr>
+                            <tr class="border-bottom" style="border-color: #f0f0f0 !important;">
+                                <td class="py-3 text-dark fw-semibold">Thứ 7</td>
+                                <td class="py-3 text-end fw-bold text-primary" style="color: #003366 !important;">08:00 - 18:00</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-dark fw-semibold">Chủ Nhật</td>
+                                <td class="py-3 text-end fw-bold text-primary" style="color: #003366 !important;">09:00 - 17:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

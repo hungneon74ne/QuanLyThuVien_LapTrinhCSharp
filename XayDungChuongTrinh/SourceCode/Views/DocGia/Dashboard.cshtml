@@ -281,36 +281,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mt-2" style="border-radius: 12px;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="section-title mb-0 border-0"><i class="fas fa-star me-2 text-warning"></i>Sách mới bổ sung</h4>
-                        <a href="/Home/Books" class="btn btn-outline-primary btn-sm rounded-pill px-3">Xem tất cả kho sách</a>
-                    </div>
-                    
-                    <div class="row">
-                        @if (ViewBag.NewBooks != null && ((List<QuanLyThuVien.Models.Sach>)ViewBag.NewBooks).Count > 0)
-                        {
-                            @foreach (var sach in (List<QuanLyThuVien.Models.Sach>)ViewBag.NewBooks)
-                            {
-                                <div class="col-lg-3 col-md-6 mb-4">
-                                    <div class="card book-card h-100">
-                                        <a href="/DocGia/ChiTietSach/@sach.MaSach">
-                                            <img src="@(string.IsNullOrEmpty(sach.HinhAnh) ? "/images/default-book.png" : sach.HinhAnh)" class="card-img-top book-cover" alt="@sach.TenSach">
-                                        </a>
-                                        <div class="card-body text-center p-3">
-                                            <h6 class="card-title fw-bold text-truncate" title="@sach.TenSach">
-                                                <a href="/DocGia/ChiTietSach/@sach.MaSach" class="text-dark text-decoration-none">@sach.TenSach</a>
-                                            </h6>
-                                            <p class="text-muted small mb-0 text-truncate">@sach.TacGia?.TenTacGia</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
+            <!-- Đã gỡ bỏ danh sách Sách mới bổ sung theo yêu cầu -->
 
         </div>
     </div>

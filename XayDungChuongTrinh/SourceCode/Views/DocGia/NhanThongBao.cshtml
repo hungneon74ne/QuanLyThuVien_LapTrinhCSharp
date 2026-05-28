@@ -139,13 +139,29 @@
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: 'Đã đánh dấu tất cả thông báo là đã đọc!',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
             } else {
-                alert(data.message || 'Có lỗi xảy ra!');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: data.message || 'Có lỗi xảy ra!'
+                });
             }
         })
         .catch(error => {
-            alert('Có lỗi xảy ra!');
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Không thể kết nối đến máy chủ lúc này!'
+            });
         });
     }
 </script>

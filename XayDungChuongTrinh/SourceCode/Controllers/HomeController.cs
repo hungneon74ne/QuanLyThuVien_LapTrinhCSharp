@@ -50,9 +50,30 @@ namespace QuanLyThuVien.Controllers
             return View();
         }
 
-        public IActionResult Books()
+        public IActionResult Books(string keyword, int? category)
         {
-            return View();
+            var query = _context.Sachs
+                .Include(s => s.TacGia)
+                .Include(s => s.TheLoai)
+                .Where(s => s.DaXoa == 0);
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(s => s.TenSach.Contains(keyword) || s.TacGia.TenTacGia.Contains(keyword));
+            }
+
+            if (category.HasValue)
+            {
+                query = query.Where(s => s.MaTheLoai == category.Value);
+            }
+
+            var books = query.ToList();
+
+            ViewBag.Categories = _context.TheLoais.Where(t => t.DaXoa == 0).ToList();
+            ViewBag.Keyword = keyword;
+            ViewBag.SelectedCategory = category;
+
+            return View(books);
         }
 
         public IActionResult About()
