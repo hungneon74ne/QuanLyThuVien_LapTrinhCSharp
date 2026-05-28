@@ -1,0 +1,306 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<!-- Carousel Slider - Full Width -->
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" style="margin-bottom: 40px;">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&h=600&fit=crop" class="d-block w-100" alt="Library" style="height: 600px; object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block">
+                <h3>Thư viện - Nơi tri thức bắt đầu</h3>
+                <p>Khám phá hàng ngàn cuốn sách hay và bổ ích</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&h=600&fit=crop" class="d-block w-100" alt="Books" style="height: 600px; object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block">
+                <h3>Sách đa dạng thể loại</h3>
+                <p>Từ văn học đến khoa học, tất cả đều có tại đây</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=600&fit=crop" class="d-block w-100" alt="Reading" style="height: 600px; object-fit: cover;">
+            <div class="carousel-caption d-none d-md-block">
+                <h3>Không gian đọc sách yên tĩnh</h3>
+                <p>Tận hưởng không gian thoải mái để đọc và học tập</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="main-container">
+    <!-- Features -->
+    <div class="row mb-5">
+        <div class="col-md-4 text-center">
+            <div class="feature-item p-4">
+                <i class="fas fa-book-reader feature-icon"></i>
+                <h4>Thư viện phong phú</h4>
+                <p class="text-muted">Hàng ngàn đầu sách đa dạng thể loại</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="feature-item p-4">
+                <i class="fas fa-laptop feature-icon"></i>
+                <h4>Mượn online</h4>
+                <p class="text-muted">Đăng ký mượn sách qua mạng dễ dàng</p>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="feature-item p-4">
+                <i class="fas fa-headset feature-icon"></i>
+                <h4>Hỗ trợ 24/7</h4>
+                <p class="text-muted">Luôn sẵn sàng hỗ trợ bạn mọi lúc</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Books -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold"><i class="fas fa-star text-warning me-2"></i>Sách nổi bật</h2>
+            <a href="/Home/Books">Xem tất cả <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+
+        <div class="row">
+            <!-- Book 1 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Cho tôi xin một vé đi tuổi thơ</h5>
+                        <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Văn học</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book 2 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Harry Potter và Hòn đá Phù thủy</h5>
+                        <p class="card-text text-muted mb-2">J.K. Rowling</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Kinh dị</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.8</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book 3 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Chí Phèo</h5>
+                        <p class="card-text text-muted mb-2">Nam Cao</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Văn học cổ điển</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.3</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book 4 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Đắc Nhân Tâm</h5>
+                        <p class="card-text text-muted mb-2">Dale Carnegie</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Tự giúp bản thân</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.9</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Books by Category: Văn học -->
+    <div class="mb-5">
+        <h2 class="fw-bold mb-4 text-center py-3" style="background: #e9ecef; font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Playfair Display', serif;">Văn Học</h2>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Cho tôi xin một vé đi tuổi thơ</h5>
+                        <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Văn học</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Chí Phèo</h5>
+                        <p class="card-text text-muted mb-2">Nam Cao</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Văn học cổ điển</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.3</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Nhà Giả Kim</h5>
+                        <p class="card-text text-muted mb-2">Paulo Coelho</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Tiểu thuyết</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.6</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Tôi thấy hoa vàng trên cỏ xanh</h5>
+                        <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Văn học</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.7</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Books by Category: Khoa học -->
+    <div class="mb-5">
+        <h2 class="fw-bold mb-4 text-center py-3" style="background: #e9ecef; font-size: 1.8rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Playfair Display', serif;">Khoa Học</h2>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Sapiens: Lược sử loài người</h5>
+                        <p class="card-text text-muted mb-2">Yuval Noah Harari</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Lịch sử</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.7</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Tư duy nhanh và chậm</h5>
+                        <p class="card-text text-muted mb-2">Daniel Kahneman</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Tâm lý học</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1555446815-9f9be8578d7a?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Lược sử thời gian</h5>
+                        <p class="card-text text-muted mb-2">Stephen Hawking</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Vật lý</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.8</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400" class="card-img-top" alt="Sách">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Gen: Một lịch sử di truyền</h5>
+                        <p class="card-text text-muted mb-2">Siddhartha Mukherjee</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Sinh học</span>
+                            <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.6</small>
+                        </div>
+                        <div class="mt-3">
+                            <a href="/Home/Books" class="text-decoration-none">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="text-center py-5" style="background: #003366; border-radius: 0;">
+        <h3 class="text-white fw-bold mb-3">Bắt đầu khám phá ngay hôm nay</h3>
+        <p class="text-white-50 mb-4">Đăng ký thành viên để mượn sách và nhận nhiều ưu đãi</p>
+        @if (Context.Session.GetString("MaNguoiDung") == null)
+        {
+            <a href="/Auth/Login" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+                <i class="fas fa-user-plus me-2"></i>Đăng ký ngay
+            </a>
+        }
+    </div>
+</div>

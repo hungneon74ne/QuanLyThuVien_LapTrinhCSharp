@@ -1,131 +1,407 @@
 using Microsoft.AspNetCore.Mvc;
-using QuanLyThuVien.Business;
+using QuanLyThuVien.Data;
+using QuanLyThuVien.Models;
+using Microsoft.EntityFrameworkCore;
+using QuanLyThuVien.Enums;
+using System.Linq;
+using System.Collections.Generic;
+using System;
+using Microsoft.AspNetCore.Http;
 
 namespace QuanLyThuVien.Controllers
 {
-    // [Authorize(Roles = "DocGia")]
     public class DocGiaController : Controller
     {
-        private readonly SachBusiness _sachBusiness;
-        private readonly PhieuMuonBusiness _phieuMuonBusiness;
-        private readonly DanhGiaSachBusiness _danhGiaSachBusiness;
-        private readonly SachYeuThichBusiness _sachYeuThichBusiness;
-        private readonly ThongBaoBusiness _thongBaoBusiness;
+        private readonly QuanLyThuVienDbContext _context;
 
-        public DocGiaController(
-            SachBusiness sachBusiness,
-            PhieuMuonBusiness phieuMuonBusiness,
-            DanhGiaSachBusiness danhGiaSachBusiness,
-            SachYeuThichBusiness sachYeuThichBusiness,
-            ThongBaoBusiness thongBaoBusiness)
+        public DocGiaController(QuanLyThuVienDbContext context)
         {
-            _sachBusiness = sachBusiness;
-            _phieuMuonBusiness = phieuMuonBusiness;
-            _danhGiaSachBusiness = danhGiaSachBusiness;
-            _sachYeuThichBusiness = sachYeuThichBusiness;
-            _thongBaoBusiness = thongBaoBusiness;
+            _context = context;
+        }
+
+        private int? GetCurrentDocGiaId()
+        {
+            var maNguoiDung = HttpContext.Session.GetString("MaNguoiDung");
+            if (string.IsNullOrEmpty(maNguoiDung)) return null;
+
+            var ndId = int.Parse(maNguoiDung);
+            var docGia = _context.DocGias.FirstOrDefault(d => d.MaNguoiDung == ndId);
+            return docGia?.MaDocGia;
+        }
+
+        private int? GetCurrentUserId()
+        {
+            var maNguoiDung = HttpContext.Session.GetString("MaNguoiDung");
+            if (string.IsNullOrEmpty(maNguoiDung)) return null;
+            return int.Parse(maNguoiDung);
         }
 
         public IActionResult Dashboard()
         {
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var docGia = _context.DocGias
+                .Include(d => d.VaiTroDocGia)
+                .FirstOrDefault(d => d.MaDocGia == maDocGia.Value);
+
+            ViewBag.DocGia = docGia;
+
+            ViewBag.SoSachDangMuon = _context.ChiTietPhieuMuons
+                .Count(ct => ct.PhieuMuon.MaDocGia == maDocGia.Value && ct.TrangThaiTra == 0 && ct.PhieuMuon.TrangThai == TrangThaiPhieuMuon.DangMuon);
+            
+            ViewBag.SoSachYeuThich = _context.SachYeuThichs.Count(s => s.MaDocGia == maDocGia.Value);
+            
+            ViewBag.SoLichSuMuon = _context.PhieuMuons.Count(p => p.MaDocGia == maDocGia.Value);
+
+            ViewBag.ThongBaos = _context.ThongBaos
+                .Where(t => t.MaNguoiDung == docGia.MaNguoiDung)
+                .OrderByDescending(t => t.NgayTao)
+                .Take(5)
+                .ToList();
+
+            ViewBag.RecentLoans = _context.PhieuMuons
+                .Where(p => p.MaDocGia == maDocGia.Value)
+                .OrderByDescending(p => p.NgayMuon)
+                .Take(5)
+                .ToList();
+
+            ViewBag.NewBooks = _context.Sachs
+                .Include(s => s.TacGia)
+                .Where(s => s.DaXoa == 0)
+                .OrderByDescending(s => s.NgayTao)
+                .Take(4)
+                .ToList();
+
             return View();
         }
 
         public IActionResult ThongTinCaNhan()
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var docGia = _context.DocGias
+                .Include(d => d.VaiTroDocGia)
+                .FirstOrDefault(d => d.MaDocGia == maDocGia.Value);
+
+            ViewBag.Roles = _context.VaiTroDocGias.Where(r => r.DaXoa == 0).ToList();
+
+            return View(docGia);
         }
 
         [HttpPost]
-        public IActionResult CapNhatThongTinCaNhan()
+        public IActionResult CapNhatThongTinCaNhan(string tenDocGia, string gioiTinh, DateTime? ngaySinh, string soDienThoai, string email, string diaChi, string soCCCD, int maVaiTro)
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var docGia = _context.DocGias.FirstOrDefault(d => d.MaDocGia == maDocGia.Value);
+            if (docGia != null)
+            {
+                docGia.TenDocGia = tenDocGia;
+                docGia.GioiTinh = gioiTinh;
+                docGia.NgaySinh = ngaySinh;
+                docGia.SoDienThoai = soDienThoai;
+                docGia.Email = email;
+                docGia.DiaChi = diaChi;
+                docGia.SoCCCD = soCCCD;
+                docGia.MaVaiTro = maVaiTro;
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+            }
+            return RedirectToAction("ThongTinCaNhan");
         }
 
         [HttpPost]
-        public IActionResult DoiMatKhau()
+        public IActionResult DoiMatKhau(string matKhauCu, string matKhauMoi, string xacNhanMatKhauMoi)
         {
-            throw new System.NotImplementedException();
+            var maNguoiDung = GetCurrentUserId();
+            if (!maNguoiDung.HasValue) return RedirectToAction("Login", "Auth");
+
+            if (matKhauMoi != xacNhanMatKhauMoi)
+            {
+                TempData["ErrorMessage"] = "Mật khẩu xác nhận không khớp!";
+                return RedirectToAction("ThongTinCaNhan");
+            }
+
+            var nd = _context.NguoiDungs.FirstOrDefault(n => n.MaNguoiDung == maNguoiDung.Value);
+            if (nd != null && nd.MatKhau == matKhauCu)
+            {
+                nd.MatKhau = matKhauMoi;
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Mật khẩu cũ không chính xác!";
+            }
+            return RedirectToAction("ThongTinCaNhan");
         }
 
-        public IActionResult DanhSachSach()
+        public IActionResult DanhSachSach(int? theLoai, int? tacGia, int? nhaXuatBan, string keyword)
         {
-            throw new System.NotImplementedException();
-        }
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
 
-        public IActionResult TimKiemSach(string keyword)
-        {
-            throw new System.NotImplementedException();
-        }
+            var query = _context.Sachs
+                .Include(s => s.TacGia)
+                .Include(s => s.TheLoai)
+                .Include(s => s.NhaXuatBan)
+                .Where(s => s.DaXoa == 0);
 
-        public IActionResult LocSach()
-        {
-            throw new System.NotImplementedException();
+            if (theLoai.HasValue) query = query.Where(s => s.MaTheLoai == theLoai.Value);
+            if (tacGia.HasValue) query = query.Where(s => s.MaTacGia == tacGia.Value);
+            if (nhaXuatBan.HasValue) query = query.Where(s => s.MaNhaXuatBan == nhaXuatBan.Value);
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(s => s.TenSach.Contains(keyword) || s.ISBN.Contains(keyword));
+            }
+
+            ViewBag.TheLoais = _context.TheLoais.Where(t => t.DaXoa == 0).ToList();
+            ViewBag.TacGias = _context.TacGias.Where(t => t.DaXoa == 0).ToList();
+            ViewBag.NhaXuatBans = _context.NhaXuatBans.Where(t => t.DaXoa == 0).ToList();
+
+            ViewBag.SelectedTheLoai = theLoai;
+            ViewBag.SelectedTacGia = tacGia;
+            ViewBag.SelectedNhaXuatBan = nhaXuatBan;
+            ViewBag.Keyword = keyword;
+            ViewBag.FavoriteBookIds = _context.SachYeuThichs.Where(s => s.MaDocGia == maDocGia.Value).Select(s => s.MaSach).ToList();
+
+            return View(query.ToList());
         }
 
         public IActionResult ChiTietSach(int id)
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var sach = _context.Sachs
+                .Include(s => s.TacGia)
+                .Include(s => s.TheLoai)
+                .Include(s => s.NhaXuatBan)
+                .Include(s => s.DanhGiaSachs)
+                    .ThenInclude(d => d.DocGia)
+                .FirstOrDefault(s => s.MaSach == id && s.DaXoa == 0);
+
+            if (sach == null) return NotFound();
+
+            ViewBag.IsFavorited = _context.SachYeuThichs.Any(s => s.MaDocGia == maDocGia.Value && s.MaSach == id);
+
+            return View(sach);
         }
 
         [HttpPost]
-        public IActionResult GuiYeuCauMuonSach(int[] sachIds)
+        public IActionResult GuiYeuCauMuonSach([FromBody] Dictionary<string, int[]> data)
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            if (data == null || !data.ContainsKey("sachIds") || data["sachIds"].Length == 0)
+                return Json(new { success = false, message = "Không có sách nào được chọn!" });
+
+            var sachIds = data["sachIds"];
+
+            var phieuMuon = new PhieuMuon
+            {
+                MaDocGia = maDocGia.Value,
+                NgayMuon = DateTime.Now,
+                HanTra = DateTime.Now.AddDays(14),
+                TrangThai = TrangThaiPhieuMuon.ChoDuyet
+            };
+            _context.PhieuMuons.Add(phieuMuon);
+            _context.SaveChanges();
+
+            foreach (var sId in sachIds)
+            {
+                var ct = new ChiTietPhieuMuon
+                {
+                    MaPhieuMuon = phieuMuon.MaPhieuMuon,
+                    MaSach = sId,
+                    TrangThaiTra = 0
+                };
+                _context.ChiTietPhieuMuons.Add(ct);
+            }
+            _context.SaveChanges();
+
+            return Json(new { success = true, message = "Đã gửi yêu cầu mượn sách!" });
         }
 
         [HttpPost]
-        public IActionResult HuyYeuCauMuonSach(int id)
+        public IActionResult HuyYeuCauMuonSach([FromBody] Dictionary<string, int> data)
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            if (data == null || !data.ContainsKey("id")) return Json(new { success = false, message = "Dữ liệu không hợp lệ!" });
+            
+            var id = data["id"];
+            var phieu = _context.PhieuMuons.FirstOrDefault(p => p.MaPhieuMuon == id && p.MaDocGia == maDocGia.Value && p.TrangThai == TrangThaiPhieuMuon.ChoDuyet);
+            if (phieu != null)
+            {
+                phieu.TrangThai = TrangThaiPhieuMuon.DaHuy;
+                _context.SaveChanges();
+                return Json(new { success = true, message = "Đã hủy yêu cầu mượn sách!" });
+            }
+            return Json(new { success = false, message = "Không thể hủy yêu cầu này!" });
         }
 
         public IActionResult TheoDoiTrangThaiMuon()
         {
-            throw new System.NotImplementedException();
+            return RedirectToAction("Dashboard");
         }
 
         public IActionResult DanhSachDangMuon()
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var list = _context.ChiTietPhieuMuons
+                .Include(ct => ct.PhieuMuon)
+                .Include(ct => ct.Sach)
+                    .ThenInclude(s => s.TacGia)
+                .Where(ct => ct.PhieuMuon.MaDocGia == maDocGia.Value && ct.TrangThaiTra == 0 && ct.PhieuMuon.TrangThai == TrangThaiPhieuMuon.DangMuon)
+                .ToList();
+
+            ViewBag.OverdueBooksCount = list.Count(ct => ct.PhieuMuon.HanTra.HasValue && ct.PhieuMuon.HanTra.Value < DateTime.Now);
+
+            return View(list);
         }
 
         public IActionResult LichSuMuon()
         {
-            throw new System.NotImplementedException();
-        }
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
 
-        public IActionResult XemTienPhat()
-        {
-            throw new System.NotImplementedException();
+            var list = _context.ChiTietPhieuMuons
+                .Include(ct => ct.PhieuMuon)
+                .Include(ct => ct.Sach)
+                .Include(ct => ct.PhieuTra)
+                .Where(ct => ct.PhieuMuon.MaDocGia == maDocGia.Value && ct.PhieuMuon.TrangThai != TrangThaiPhieuMuon.ChoDuyet)
+                .OrderByDescending(ct => ct.PhieuMuon.NgayMuon)
+                .ToList();
+
+            ViewBag.TongSoLanMuon = list.Count;
+            ViewBag.DaTraDungHan = list.Count(ct => ct.TrangThaiTra == (int)TrangThaiTraSach.DaTra && ct.PhieuTra != null && ct.PhieuTra.TienPhat == 0);
+            ViewBag.TongTienPhat = list.Where(ct => ct.PhieuTra != null).Sum(ct => ct.PhieuTra.TienPhat);
+
+            return View(list);
         }
 
         public IActionResult NhanThongBao()
         {
-            throw new System.NotImplementedException();
+            var maNguoiDung = GetCurrentUserId();
+            if (!maNguoiDung.HasValue) return RedirectToAction("Login", "Auth");
+
+            var list = _context.ThongBaos
+                .Where(t => t.MaNguoiDung == maNguoiDung.Value)
+                .OrderByDescending(t => t.NgayTao)
+                .ToList();
+
+            return View(list);
         }
 
         [HttpPost]
-        public IActionResult LuuSachYeuThich(int id)
+        public IActionResult DanhDauDaDocTatCa()
         {
-            throw new System.NotImplementedException();
+            var maNguoiDung = GetCurrentUserId();
+            if (!maNguoiDung.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            var unread = _context.ThongBaos.Where(t => t.MaNguoiDung == maNguoiDung.Value && t.DaDoc == 0).ToList();
+            foreach (var t in unread)
+            {
+                t.DaDoc = 1;
+            }
+            _context.SaveChanges();
+            return Json(new { success = true });
         }
 
         [HttpPost]
-        public IActionResult XoaSachYeuThich(int id)
+        public IActionResult LuuSachYeuThich([FromBody] Dictionary<string, int> data)
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            if (data == null || !data.ContainsKey("id")) return Json(new { success = false, message = "Lỗi!" });
+            var sachId = data["id"];
+
+            var exists = _context.SachYeuThichs.Any(s => s.MaDocGia == maDocGia.Value && s.MaSach == sachId);
+            if (!exists)
+            {
+                _context.SachYeuThichs.Add(new SachYeuThich { MaDocGia = maDocGia.Value, MaSach = sachId });
+                _context.SaveChanges();
+            }
+            return Json(new { success = true, message = "Đã thêm vào yêu thích!" });
         }
 
         [HttpPost]
-        public IActionResult DanhGiaSach(int sachId, int soSao, string nhanXet)
+        public IActionResult XoaSachYeuThich([FromBody] Dictionary<string, int> data)
         {
-            throw new System.NotImplementedException();
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return Json(new { success = false, message = "Chưa đăng nhập!" });
+
+            if (data == null || !data.ContainsKey("id")) return Json(new { success = false, message = "Lỗi!" });
+            var sachId = data["id"];
+
+            var item = _context.SachYeuThichs.FirstOrDefault(s => s.MaDocGia == maDocGia.Value && s.MaSach == sachId);
+            if (item != null)
+            {
+                _context.SachYeuThichs.Remove(item);
+                _context.SaveChanges();
+            }
+            return Json(new { success = true, message = "Đã xóa khỏi yêu thích!" });
+        }
+
+        public IActionResult SachYeuThich()
+        {
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var favoriteBooks = _context.SachYeuThichs
+                .Include(s => s.Sach)
+                    .ThenInclude(s => s.TacGia)
+                .Include(s => s.Sach)
+                    .ThenInclude(s => s.TheLoai)
+                .Where(s => s.MaDocGia == maDocGia.Value)
+                .Select(s => s.Sach)
+                .ToList();
+
+            return View(favoriteBooks);
+        }
+
+        [HttpPost]
+        public IActionResult DanhGiaSach(int sachId, int soSao, string binhLuan)
+        {
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var dg = _context.DanhGiaSachs.FirstOrDefault(d => d.MaDocGia == maDocGia.Value && d.MaSach == sachId);
+            if (dg != null)
+            {
+                dg.SoSao = soSao;
+                dg.BinhLuan = binhLuan;
+                dg.NgayDanhGia = DateTime.Now;
+            }
+            else
+            {
+                _context.DanhGiaSachs.Add(new DanhGiaSach
+                {
+                    MaDocGia = maDocGia.Value,
+                    MaSach = sachId,
+                    SoSao = soSao,
+                    BinhLuan = binhLuan,
+                    NgayDanhGia = DateTime.Now,
+                    TrangThai = (TrangThaiHienThi)1
+                });
+            }
+            _context.SaveChanges();
+            return RedirectToAction("ChiTietSach", new { id = sachId });
         }
 
         public IActionResult XemQuyDinhThuVien()
         {
-            throw new System.NotImplementedException();
+            var list = _context.QuyDinhs.Where(q => (int)q.TrangThai == 1).OrderBy(q => q.MaQuyDinh).ToList();
+            return View(list);
         }
     }
 }

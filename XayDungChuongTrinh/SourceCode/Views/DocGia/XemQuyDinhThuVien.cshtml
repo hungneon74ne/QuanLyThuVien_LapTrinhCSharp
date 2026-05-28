@@ -1,0 +1,132 @@
+@model List<QuanLyThuVien.Models.QuyDinh>
+@{
+    ViewData["Title"] = "Quy định thư viện";
+}
+
+<style>
+    .regulation-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        background: #fff;
+        margin-bottom: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .regulation-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .regulation-header {
+        background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        padding: 20px;
+    }
+    .accordion-button:not(.collapsed) {
+        background-color: #003366;
+        color: white;
+    }
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 51, 102, 0.15);
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/Dashboard" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-home me-2"></i>Trang chủ
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/ThongTinCaNhan" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachSach" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book me-2"></i>Danh sách sách
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book-open me-2"></i>Sách đang mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/LichSuMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-history me-2"></i>Lịch sử mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/SachYeuThich" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-heart me-2"></i>Sách yêu thích
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/NhanThongBao" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-bell me-2"></i>Thông báo
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
+                            <a href="/DocGia/XemQuyDinhThuVien" class="text-decoration-none fw-bold" style="color: #003366;">
+                                <i class="fas fa-info-circle me-2"></i>Quy định thư viện
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="card regulation-card">
+                <div class="regulation-header">
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-book-law me-2"></i>Quy định thư viện</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info border-0 shadow-sm" style="border-radius: 8px;">
+                        <i class="fas fa-info-circle me-2 text-info"></i><strong>Lưu ý:</strong> Vui lòng đọc kỹ các quy định dưới đây để tránh bị phạt tiền.
+                    </div>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="accordion" id="quyDinhAccordion">
+                            @foreach (var qd in Model.OrderBy(q => q.MaQuyDinh))
+                            {
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading@(qd.MaQuyDinh)">
+                                        <button class="accordion-button @(qd.MaQuyDinh == 1 ? "" : "collapsed")" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(qd.MaQuyDinh)">
+                                            <i class="fas fa-gavel me-2"></i>@qd.TieuDe
+                                        </button>
+                                    </h2>
+                                    <div id="collapse@(qd.MaQuyDinh)" class="accordion-collapse collapse @(qd.MaQuyDinh == 1 ? "show" : "")" data-bs-parent="#quyDinhAccordion">
+                                        <div class="accordion-body">
+                                            @Html.Raw(qd.NoiDung?.Replace("\n", "<br/>") ?? "Đang cập nhật...")
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-alt fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Không có quy định nào</h5>
+                            <p class="text-muted">Vui lòng liên hệ thủ thư để biết thêm thông tin.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

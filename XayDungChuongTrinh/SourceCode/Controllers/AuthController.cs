@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyThuVien.Business;
+using QuanLyThuVien.Models;
+using QuanLyThuVien.Enums;
 
 namespace QuanLyThuVien.Controllers
 {
@@ -15,6 +17,12 @@ namespace QuanLyThuVien.Controllers
         // GET: /Auth/Login
         public IActionResult Login()
         {
+            // Nếu đã đăng nhập thì redirect theo quyền
+            if (HttpContext.Session.GetString("MaNguoiDung") != null)
+            {
+                var quyen = (QuyenNguoiDung)int.Parse(HttpContext.Session.GetString("Quyen"));
+                return RedirectBasedOnRole(quyen);
+            }
             return View();
         }
 
@@ -22,24 +30,53 @@ namespace QuanLyThuVien.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            // Gọi _authBusiness để xử lý đăng nhập
-            // Nếu thành công thì redirect dựa trên Quyen (Admin, ThuThu, DocGia)
-            // Nếu thất bại trả về thông báo lỗi
-            throw new System.NotImplementedException();
+            var user = _authBusiness.Login(username, password);
+
+            if (user != null)
+            {
+                // Lưu session
+                HttpContext.Session.SetString("MaNguoiDung", user.MaNguoiDung.ToString());
+                HttpContext.Session.SetString("TenDangNhap", user.TenDangNhap);
+                HttpContext.Session.SetString("HoTen", user.HoTen);
+                HttpContext.Session.SetString("Quyen", ((int)user.Quyen).ToString());
+
+                // Redirect theo quyền
+                return RedirectBasedOnRole(user.Quyen);
+            }
+            else
+            {
+                ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng!";
+                return View();
+            }
         }
 
         // GET: /Auth/Logout
         public IActionResult Logout()
         {
-            // Xóa session/cookie đăng nhập
-            throw new System.NotImplementedException();
+            // Xóa session
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login");
         }
 
         // GET: /Auth/AccessDenied
         public IActionResult AccessDenied()
         {
-            // Hiển thị trang báo lỗi không có quyền truy cập
             return View();
+        }
+
+        private IActionResult RedirectBasedOnRole(QuyenNguoiDung quyen)
+        {
+            switch (quyen)
+            {
+                case QuyenNguoiDung.Admin:
+                    return RedirectToAction("Index", "Admin");
+                case QuyenNguoiDung.ThuThu:
+                    return RedirectToAction("Index", "ThuThu");
+                case QuyenNguoiDung.DocGia:
+                    return RedirectToAction("Dashboard", "DocGia");
+                default:
+                    return RedirectToAction("AccessDenied");
+            }
         }
     }
 }

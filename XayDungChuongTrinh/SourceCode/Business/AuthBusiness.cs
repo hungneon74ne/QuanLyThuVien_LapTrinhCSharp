@@ -1,5 +1,8 @@
 using System;
+using System.Linq;
 using QuanLyThuVien.Data;
+using QuanLyThuVien.Models;
+using QuanLyThuVien.Enums;
 
 namespace QuanLyThuVien.Business
 {
@@ -12,16 +15,19 @@ namespace QuanLyThuVien.Business
             _context = context;
         }
 
-        // TODO: Xử lý đăng nhập
-        public bool Login(string username, string password)
+        // Xử lý đăng nhập
+        public NguoiDung Login(string username, string password)
         {
-            throw new NotImplementedException();
+            var user = _context.NguoiDungs
+                .FirstOrDefault(u => u.TenDangNhap == username && u.MatKhau == password && u.TrangThai == TrangThaiTaiKhoan.HoatDong);
+
+            return user;
         }
 
-        // TODO: Xử lý phân quyền
-        public void CheckRole()
+        // Lấy thông tin độc giả theo MaNguoiDung
+        public DocGia GetDocGiaByMaNguoiDung(int maNguoiDung)
         {
-            throw new NotImplementedException();
+            return _context.DocGias.FirstOrDefault(dg => dg.MaNguoiDung == maNguoiDung);
         }
     }
 }

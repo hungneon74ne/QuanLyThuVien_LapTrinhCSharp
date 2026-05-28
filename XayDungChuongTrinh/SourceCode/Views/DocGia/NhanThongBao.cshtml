@@ -1,0 +1,151 @@
+@model List<QuanLyThuVien.Models.ThongBao>
+@{
+    ViewData["Title"] = "Thông báo";
+}
+
+<style>
+    .notification-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        background: #fff;
+        margin-bottom: 15px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .notification-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .notification-card.unread {
+        border-left: 4px solid #003366;
+        background: #f8f9fa;
+    }
+    .notification-header {
+        background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        padding: 20px;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/Dashboard" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-home me-2"></i>Trang chủ
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/ThongTinCaNhan" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachSach" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book me-2"></i>Danh sách sách
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book-open me-2"></i>Sách đang mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/LichSuMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-history me-2"></i>Lịch sử mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/SachYeuThich" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-heart me-2"></i>Sách yêu thích
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
+                            <a href="/DocGia/NhanThongBao" class="text-decoration-none fw-bold" style="color: #003366;">
+                                <i class="fas fa-bell me-2"></i>Thông báo
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/XemQuyDinhThuVien" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-info-circle me-2"></i>Quy định thư viện
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="card notification-card">
+                <div class="notification-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-bell me-2"></i>Thông báo</h4>
+                    <button type="button" class="btn btn-light btn-sm fw-bold" onclick="markAllAsRead()">
+                        <i class="fas fa-check-double me-1"></i>Đánh dấu tất cả đã đọc
+                    </button>
+                </div>
+                <div class="card-body p-4">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var tb in Model.OrderByDescending(t => t.NgayTao))
+                        {
+                            <div class="card notification-card @(tb.DaDoc == 0 ? "unread" : "")">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="fw-bold mb-0 @(tb.DaDoc == 0 ? "text-primary" : "text-dark")">@tb.TieuDe</h5>
+                                        <small class="text-muted">@tb.NgayTao.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                    <p class="mb-0 text-secondary">@tb.NoiDung</p>
+                                    @if (tb.DaDoc == 0)
+                                    {
+                                        <div class="mt-2">
+                                            <span class="badge bg-primary">Chưa đọc</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-bell-slash fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Không có thông báo nào</h5>
+                            <p class="text-muted">Bạn sẽ nhận được thông báo khi có cập nhật liên quan đến tài khoản của bạn.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function markAllAsRead() {
+        fetch('/DocGia/DanhDauDaDocTatCa', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra!');
+            }
+        })
+        .catch(error => {
+            alert('Có lỗi xảy ra!');
+        });
+    }
+</script>
