@@ -243,7 +243,24 @@
     </div>
 </div>
 
+<!-- SweetAlert2 CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
+    // Cấu hình Toast chung của SweetAlert2
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
     function toggleFavorite(sachId, btn) {
         let isFav = btn.classList.contains('active');
         let url = isFav ? '/DocGia/XoaSachYeuThich' : '/DocGia/LuuSachYeuThich';
@@ -261,15 +278,32 @@
                 if(isFav) {
                     btn.classList.remove('active');
                     btn.innerHTML = '<i class="fas fa-heart me-2"></i> Thêm Yêu Thích';
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Đã xóa khỏi danh sách yêu thích!'
+                    });
                 } else {
                     btn.classList.add('active');
                     btn.innerHTML = '<i class="fas fa-heart me-2"></i> Đã Yêu Thích';
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Đã thêm vào danh sách yêu thích!'
+                    });
                 }
             } else {
-                alert(data.message);
+                Toast.fire({
+                    icon: 'error',
+                    title: data.message || 'Có lỗi xảy ra!'
+                });
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err);
+            Toast.fire({
+                icon: 'error',
+                title: 'Không thể kết nối đến máy chủ!'
+            });
+        });
     }
 
     function borrowBook(sachId) {
@@ -282,11 +316,33 @@
         })
         .then(res => res.json())
         .then(data => {
-            alert(data.message);
             if(data.success) {
-                window.location.href = '/DocGia/Dashboard';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng ký thành công!',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = '/DocGia/Dashboard';
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Không thể mượn sách',
+                    text: data.message,
+                    confirmButtonText: 'Đã hiểu',
+                    confirmButtonColor: '#003366'
+                });
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Không thể gửi yêu cầu mượn sách lúc này!'
+            });
+        });
     }
 </script>
