@@ -1,0 +1,292 @@
+@model List<QuanLyThuVien.Models.Sach>
+@{
+    ViewData["Title"] = "Danh sách sách";
+}
+
+<style>
+    .book-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        background: #fff;
+    }
+    .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    .book-cover-container {
+        height: 240px;
+        overflow: hidden;
+        position: relative;
+    }
+    .book-cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .book-card:hover .book-cover {
+        transform: scale(1.05);
+    }
+    .book-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 51, 102, 0.85);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+    }
+    .card-title-link {
+        color: #003366;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .card-title-link:hover {
+        color: #00509e;
+    }
+    .filter-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .filter-header {
+        background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+    .btn-detail {
+        background: #f8f9fa;
+        color: #003366;
+        border: 1px solid #dee2e6;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .btn-detail:hover {
+        background: #003366;
+        color: white;
+        border-color: #003366;
+    }
+    .btn-fav {
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+        background: white;
+        transition: all 0.3s;
+    }
+    .btn-fav:hover, .btn-fav.active {
+        background: #e74c3c;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/Dashboard" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-home me-2"></i>Trang chủ
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/ThongTinCaNhan" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
+                            <a href="/DocGia/DanhSachSach" class="text-decoration-none fw-bold" style="color: #003366;">
+                                <i class="fas fa-book me-2"></i>Danh sách sách
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book-open me-2"></i>Sách đang mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/LichSuMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-history me-2"></i>Lịch sử mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/SachYeuThich" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-heart me-2"></i>Sách yêu thích
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/NhanThongBao" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-bell me-2"></i>Thông báo
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/XemQuyDinhThuVien" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-info-circle me-2"></i>Quy định thư viện
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bộ lọc (Dynamic) -->
+            <div class="card filter-card">
+                <div class="card-header filter-header py-3">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-filter me-2"></i>Bộ lọc tìm kiếm</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/DocGia/DanhSachSach" method="get">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Từ khóa</label>
+                            <input type="text" class="form-control" name="keyword" value="@ViewBag.Keyword" placeholder="Tên sách, ISBN...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Thể loại</label>
+                            <select class="form-select" name="theLoai">
+                                <option value="">--- Tất cả thể loại ---</option>
+                                @if (ViewBag.TheLoais != null)
+                                {
+                                    foreach (var tl in (List<QuanLyThuVien.Models.TheLoai>)ViewBag.TheLoais)
+                                    {
+                                        <option value="@tl.MaTheLoai" selected="@(ViewBag.SelectedTheLoai == tl.MaTheLoai)">@tl.TenTheLoai</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Tác giả</label>
+                            <select class="form-select" name="tacGia">
+                                <option value="">--- Tất cả tác giả ---</option>
+                                @if (ViewBag.TacGias != null)
+                                {
+                                    foreach (var tg in (List<QuanLyThuVien.Models.TacGia>)ViewBag.TacGias)
+                                    {
+                                        <option value="@tg.MaTacGia" selected="@(ViewBag.SelectedTacGia == tg.MaTacGia)">@tg.TenTacGia</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Nhà xuất bản</label>
+                            <select class="form-select" name="nhaXuatBan">
+                                <option value="">--- Tất cả NXB ---</option>
+                                @if (ViewBag.NhaXuatBans != null)
+                                {
+                                    foreach (var nxb in (List<QuanLyThuVien.Models.NhaXuatBan>)ViewBag.NhaXuatBans)
+                                    {
+                                        <option value="@nxb.MaNhaXuatBan" selected="@(ViewBag.SelectedNhaXuatBan == nxb.MaNhaXuatBan)">@nxb.TenNhaXuatBan</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2"><i class="fas fa-search me-2"></i>Áp dụng bộ lọc</button>
+                        <a href="/DocGia/DanhSachSach" class="btn btn-light w-100 mt-2 text-muted">Xóa bộ lọc</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold text-dark mb-0"><i class="fas fa-book-open text-primary me-2"></i>Kho sách thư viện</h3>
+                <span class="text-muted">Tìm thấy <strong>@(Model?.Count ?? 0)</strong> cuốn sách</span>
+            </div>
+
+            <!-- Danh sách sách (Dynamic) -->
+            <div class="row">
+                @if (Model != null && Model.Count > 0)
+                {
+                    List<int> favoriteIds = ViewBag.FavoriteBookIds ?? new List<int>();
+
+                    foreach (var sach in Model)
+                    {
+                        bool isFav = favoriteIds.Contains(sach.MaSach);
+                        
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card book-card h-100">
+                                <div class="book-cover-container">
+                                    <a href="/DocGia/ChiTietSach/@sach.MaSach">
+                                        <img src="@(string.IsNullOrEmpty(sach.HinhAnh) ? "/images/default-book.png" : sach.HinhAnh)" class="book-cover" alt="@sach.TenSach">
+                                    </a>
+                                    <div class="book-badge">
+                                        @sach.TheLoai?.TenTheLoai
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h5 class="card-title mb-2" title="@sach.TenSach">
+                                        <a href="/DocGia/ChiTietSach/@sach.MaSach" class="card-title-link">@sach.TenSach</a>
+                                    </h5>
+                                    <p class="text-muted small mb-3"><i class="fas fa-pen-nib me-1"></i> @(sach.TacGia?.TenTacGia ?? "Không rõ")</p>
+                                    
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-success fw-bold fs-5">@sach.GiaTien?.ToString("N0") đ</span>
+                                            <span class="badge @(sach.SoLuongHienCo > 0 ? "bg-info text-dark" : "bg-danger")">
+                                                @(sach.SoLuongHienCo > 0 ? $"Còn {sach.SoLuongHienCo} cuốn" : "Hết sách")
+                                            </span>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <a asp-action="ChiTietSach" asp-route-id="@sach.MaSach" class="btn btn-detail flex-grow-1">Xem chi tiết</a>
+                                            <button type="button" class="btn btn-fav @(isFav ? "active" : "") px-3" onclick="toggleFavoriteList(@sach.MaSach, this)" title="Yêu thích">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center py-5 mt-5">
+                        <i class="fas fa-search fa-4x text-muted mb-3 opacity-50"></i>
+                        <h4 class="text-muted">Không tìm thấy cuốn sách nào phù hợp!</h4>
+                        <p class="text-muted mb-4">Vui lòng thử lại với từ khóa hoặc bộ lọc khác.</p>
+                        <a href="/DocGia/DanhSachSach" class="btn btn-outline-primary px-4">Xóa tất cả bộ lọc</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFavoriteList(sachId, btn) {
+        let isFav = btn.classList.contains('active');
+        let url = isFav ? '/DocGia/XoaSachYeuThich' : '/DocGia/LuuSachYeuThich';
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: sachId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                btn.classList.toggle('active');
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => console.error(err));
+    }
+</script>

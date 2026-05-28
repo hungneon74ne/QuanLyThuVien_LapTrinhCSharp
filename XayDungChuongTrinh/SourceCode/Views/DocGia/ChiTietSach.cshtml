@@ -1,0 +1,292 @@
+@model QuanLyThuVien.Models.Sach
+@{
+    ViewData["Title"] = "Chi tiết sách - " + Model.TenSach;
+}
+
+<style>
+    .book-cover-container {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease;
+    }
+    .book-cover-container:hover {
+        transform: translateY(-5px);
+    }
+    .book-cover-img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+    .detail-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        background: #fff;
+    }
+    .detail-header {
+        background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        padding: 20px;
+    }
+    .meta-item {
+        margin-bottom: 15px;
+    }
+    .meta-label {
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .meta-value {
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: 500;
+    }
+    .btn-action {
+        padding: 12px 24px;
+        font-weight: 600;
+        border-radius: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+    }
+    .btn-borrow {
+        background: #003366;
+        color: white;
+        border: none;
+    }
+    .btn-borrow:hover {
+        background: #002244;
+        box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+        color: white;
+    }
+    .btn-favorite {
+        border: 2px solid #e74c3c;
+        color: #e74c3c;
+        background: transparent;
+    }
+    .btn-favorite:hover, .btn-favorite.active {
+        background: #e74c3c;
+        color: white;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+    .review-card {
+        border-radius: 8px;
+        border: 1px solid #eee;
+        background: #fdfdfd;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .star-rating i {
+        color: #f1c40f;
+    }
+</style>
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/DocGia/Dashboard" class="text-decoration-none" style="color:#003366;"><i class="fas fa-home"></i> Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/DocGia/DanhSachSach" class="text-decoration-none" style="color:#003366;">Danh sách sách</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.TenSach</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-5">
+        <!-- Cột hình ảnh -->
+        <div class="col-md-4 mb-4 mb-md-0 text-center">
+            <div class="book-cover-container">
+                <img src="@(string.IsNullOrEmpty(Model.HinhAnh) ? "/images/default-book.png" : Model.HinhAnh)" alt="@Model.TenSach" class="book-cover-img" />
+            </div>
+            
+            <div class="d-grid gap-2 mt-4">
+                <button class="btn btn-borrow btn-action w-100" onclick="borrowBook(@Model.MaSach)">
+                    <i class="fas fa-book-reader me-2"></i> Mượn Sách
+                </button>
+                @{
+                    bool isFavorited = ViewBag.IsFavorited != null && (bool)ViewBag.IsFavorited;
+                }
+                <button id="btnFavorite" class="btn btn-favorite btn-action w-100 @(isFavorited ? "active" : "")" onclick="toggleFavorite(@Model.MaSach, this)">
+                    <i class="fas fa-heart me-2"></i> @(isFavorited ? "Đã Yêu Thích" : "Thêm Yêu Thích")
+                </button>
+            </div>
+        </div>
+
+        <!-- Cột thông tin chi tiết -->
+        <div class="col-md-8">
+            <div class="detail-card h-100">
+                <div class="detail-header">
+                    <h2 class="mb-1 fw-bold">@Model.TenSach</h2>
+                    <p class="mb-0 fs-5 text-white-50"><i class="fas fa-pen-nib me-2"></i>@Model.TacGia?.TenTacGia</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-sm-6 meta-item">
+                            <span class="meta-label">Mã ISBN</span>
+                            <span class="meta-value">@Model.ISBN</span>
+                        </div>
+                        <div class="col-sm-6 meta-item">
+                            <span class="meta-label">Thể loại</span>
+                            <span class="meta-value">
+                                <span class="badge bg-secondary">@Model.TheLoai?.TenTheLoai</span>
+                            </span>
+                        </div>
+                        <div class="col-sm-6 meta-item">
+                            <span class="meta-label">Nhà Xuất Bản</span>
+                            <span class="meta-value">@Model.NhaXuatBan?.TenNhaXuatBan (@Model.NamXuatBan)</span>
+                        </div>
+                        <div class="col-sm-6 meta-item">
+                            <span class="meta-label">Số trang</span>
+                            <span class="meta-value">@Model.SoTrang trang</span>
+                        </div>
+                        <div class="col-sm-6 meta-item">
+                            <span class="meta-label">Giá tiền</span>
+                            <span class="meta-value text-success fw-bold">@Model.GiaTien?.ToString("N0") VNĐ</span>
+                        </div>
+                        <div class="col-sm-6 meta-item">
+                            <span class="meta-label">Tình trạng kho</span>
+                            <span class="meta-value">
+                                @if (Model.SoLuongHienCo > 0)
+                                {
+                                    <span class="text-success"><i class="fas fa-check-circle me-1"></i> Còn @Model.SoLuongHienCo cuốn</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger"><i class="fas fa-times-circle me-1"></i> Hết sách</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold mb-3 border-bottom pb-2">Tóm tắt nội dung</h5>
+                    <p class="text-muted" style="line-height: 1.8; text-align: justify;">
+                        @(string.IsNullOrEmpty(Model.MoTa) ? "Đang cập nhật nội dung mô tả cho cuốn sách này." : Model.MoTa)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Đánh giá và Bình luận -->
+    <div class="row">
+        <div class="col-12">
+            <div class="detail-card">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4"><i class="fas fa-comments text-primary me-2"></i>Đánh giá từ độc giả (@(Model.DanhGiaSachs?.Count ?? 0))</h4>
+                    
+                    <!-- Form thêm đánh giá -->
+                    <div class="bg-light p-4 rounded mb-5">
+                        <h6 class="fw-bold mb-3">Viết đánh giá của bạn</h6>
+                        <form action="/DocGia/DanhGiaSach" method="post">
+                            <input type="hidden" name="sachId" value="@Model.MaSach" />
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Chất lượng sách (Số sao)</label>
+                                <select name="soSao" class="form-select w-auto" required>
+                                    <option value="5">5 Sao - Tuyệt vời</option>
+                                    <option value="4">4 Sao - Rất tốt</option>
+                                    <option value="3">3 Sao - Tạm được</option>
+                                    <option value="2">2 Sao - Kém</option>
+                                    <option value="1">1 Sao - Tệ</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="binhLuan" class="form-control" rows="3" placeholder="Chia sẻ cảm nghĩ của bạn về cuốn sách..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-2"></i>Gửi đánh giá</button>
+                        </form>
+                    </div>
+
+                    <!-- Danh sách đánh giá -->
+                    <div class="reviews-list">
+                        @if (Model.DanhGiaSachs != null && Model.DanhGiaSachs.Count > 0)
+                        {
+                            @foreach (var dg in Model.DanhGiaSachs.OrderByDescending(d => d.NgayDanhGia))
+                            {
+                                <div class="review-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="fw-bold mb-0 text-primary"><i class="fas fa-user-circle me-2"></i>@dg.DocGia?.TenDocGia</h6>
+                                        <small class="text-muted">@dg.NgayDanhGia.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                    <div class="star-rating mb-2">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= dg.SoSao)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                    <p class="mb-0 text-dark">@dg.BinhLuan</p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-4 text-muted">
+                                <i class="fas fa-comment-slash fa-3x mb-3 text-light"></i>
+                                <p>Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ cảm nhận!</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFavorite(sachId, btn) {
+        let isFav = btn.classList.contains('active');
+        let url = isFav ? '/DocGia/XoaSachYeuThich' : '/DocGia/LuuSachYeuThich';
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: sachId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                if(isFav) {
+                    btn.classList.remove('active');
+                    btn.innerHTML = '<i class="fas fa-heart me-2"></i> Thêm Yêu Thích';
+                } else {
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-heart me-2"></i> Đã Yêu Thích';
+                }
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => console.error(err));
+    }
+
+    function borrowBook(sachId) {
+        fetch('/DocGia/GuiYeuCauMuonSach', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ sachIds: [sachId] })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            if(data.success) {
+                window.location.href = '/DocGia/Dashboard';
+            }
+        })
+        .catch(err => console.error(err));
+    }
+</script>

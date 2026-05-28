@@ -1,0 +1,322 @@
+@{
+    ViewData["Title"] = "Trang chủ - Độc giả";
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        min-height: 100vh;
+        font-family: 'Roboto', sans-serif;
+    }
+    .welcome-banner {
+        background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+        border-radius: 12px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 20px rgba(0, 51, 102, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .welcome-banner::after {
+        content: '\f5db';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 30px;
+        bottom: -20px;
+        font-size: 150px;
+        color: rgba(255, 255, 255, 0.1);
+    }
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        transition: transform 0.3s;
+        border-left: 5px solid #003366;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-icon {
+        background: rgba(0, 51, 102, 0.1);
+        color: #003366;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-right: 20px;
+    }
+    .stat-details h3 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+    }
+    .stat-details p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #003366;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eaeaea;
+    }
+    .custom-list-group-item {
+        border-left: none;
+        border-right: none;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .custom-list-group-item:last-child {
+        border-bottom: none;
+    }
+    .book-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        transition: transform 0.3s;
+        overflow: hidden;
+    }
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    .book-cover {
+        height: 250px;
+        object-fit: cover;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
+                            <a href="/DocGia/Dashboard" class="text-decoration-none fw-bold" style="color: #003366;">
+                                <i class="fas fa-home me-2"></i>Trang chủ
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/ThongTinCaNhan" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachSach" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book me-2"></i>Danh sách sách
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-book-open me-2"></i>Sách đang mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/LichSuMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-history me-2"></i>Lịch sử mượn
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/SachYeuThich" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-heart me-2"></i>Sách yêu thích
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/NhanThongBao" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-bell me-2"></i>Thông báo
+                            </a>
+                        </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/XemQuyDinhThuVien" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-info-circle me-2"></i>Quy định thư viện
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            
+            <div class="welcome-banner">
+                <h2 class="fw-bold mb-2">Xin chào, @(ViewBag.DocGia?.TenDocGia ?? "Độc giả")!</h2>
+                <p class="mb-0 fs-5"><i class="fas fa-id-card me-2"></i>Mã thẻ: <strong>DG@(ViewBag.DocGia?.MaDocGia.ToString("D3"))</strong> &nbsp;|&nbsp; <i class="fas fa-user-tag me-2"></i>Đối tượng: <strong>@(ViewBag.DocGia?.VaiTroDocGia?.TenVaiTro ?? "Chưa có")</strong></p>
+                <p class="mb-0 mt-2 text-white-50"><i class="fas fa-calendar-alt me-2"></i>Ngày gia nhập: @(ViewBag.DocGia?.NgayBatDau?.ToString("dd/MM/yyyy"))</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="stat-card" style="border-left-color: #f39c12;">
+                        <div class="stat-icon" style="color: #f39c12; background: rgba(243, 156, 18, 0.1);">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>@ViewBag.SoSachDangMuon</h3>
+                            <p>Sách đang mượn</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card" style="border-left-color: #e74c3c;">
+                        <div class="stat-icon" style="color: #e74c3c; background: rgba(231, 76, 60, 0.1);">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>@ViewBag.SoSachYeuThich</h3>
+                            <p>Sách yêu thích</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card" style="border-left-color: #27ae60;">
+                        <div class="stat-icon" style="color: #27ae60; background: rgba(39, 174, 96, 0.1);">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>@ViewBag.SoLichSuMuon</h3>
+                            <p>Lượt mượn sách</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                        <div class="card-body p-4">
+                            <h4 class="section-title"><i class="fas fa-bell me-2 text-warning"></i>Thông báo mới nhất</h4>
+                            @if (ViewBag.ThongBaos != null && ((List<QuanLyThuVien.Models.ThongBao>)ViewBag.ThongBaos).Count > 0)
+                            {
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var tb in (List<QuanLyThuVien.Models.ThongBao>)ViewBag.ThongBaos)
+                                    {
+                                        <li class="custom-list-group-item">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <h6 class="mb-0 fw-bold @(tb.DaDoc == 0 ? "text-primary" : "text-dark")">@tb.TieuDe</h6>
+                                                <small class="text-muted">@tb.NgayTao.ToString("dd/MM")</small>
+                                            </div>
+                                            <p class="mb-0 text-muted small text-truncate">@tb.NoiDung</p>
+                                        </li>
+                                    }
+                                </ul>
+                                <div class="text-center mt-3">
+                                    <a href="/DocGia/NhanThongBao" class="text-decoration-none fw-bold" style="color: #003366;">Xem tất cả <i class="fas fa-arrow-right ms-1"></i></a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-4 text-muted">
+                                    <i class="far fa-bell-slash fa-2x mb-2 text-light"></i>
+                                    <p>Không có thông báo mới.</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                        <div class="card-body p-4">
+                            <h4 class="section-title"><i class="fas fa-clipboard-check me-2 text-success"></i>Giao dịch mượn gần đây</h4>
+                            @if (ViewBag.RecentLoans != null && ((List<QuanLyThuVien.Models.PhieuMuon>)ViewBag.RecentLoans).Count > 0)
+                            {
+                                <ul class="list-group list-group-flush">
+                                    @foreach (var pm in (List<QuanLyThuVien.Models.PhieuMuon>)ViewBag.RecentLoans)
+                                    {
+                                        <li class="custom-list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">Phiếu PM@(pm.MaPhieuMuon.ToString("D3"))</h6>
+                                                <small class="text-muted">@pm.NgayMuon.ToString("dd/MM/yyyy")</small>
+                                            </div>
+                                            <div>
+                                                @if (pm.TrangThai == QuanLyThuVien.Enums.TrangThaiPhieuMuon.ChoDuyet)
+                                                {
+                                                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                                }
+                                                else if (pm.TrangThai == QuanLyThuVien.Enums.TrangThaiPhieuMuon.DangMuon)
+                                                {
+                                                    <span class="badge bg-info">Đang mượn</span>
+                                                }
+                                                else if (pm.TrangThai == QuanLyThuVien.Enums.TrangThaiPhieuMuon.DaTra)
+                                                {
+                                                    <span class="badge bg-success">Đã trả</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Khác</span>
+                                                }
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <div class="text-center mt-3">
+                                    <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none fw-bold" style="color: #003366;">Theo dõi chi tiết <i class="fas fa-arrow-right ms-1"></i></a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fas fa-box-open fa-2x mb-2 text-light"></i>
+                                    <p>Bạn chưa mượn sách lần nào.</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-2" style="border-radius: 12px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="section-title mb-0 border-0"><i class="fas fa-star me-2 text-warning"></i>Sách mới bổ sung</h4>
+                        <a href="/DocGia/DanhSachSach" class="btn btn-outline-primary btn-sm rounded-pill px-3">Xem tất cả kho sách</a>
+                    </div>
+                    
+                    <div class="row">
+                        @if (ViewBag.NewBooks != null && ((List<QuanLyThuVien.Models.Sach>)ViewBag.NewBooks).Count > 0)
+                        {
+                            @foreach (var sach in (List<QuanLyThuVien.Models.Sach>)ViewBag.NewBooks)
+                            {
+                                <div class="col-lg-3 col-md-6 mb-4">
+                                    <div class="card book-card h-100">
+                                        <a href="/DocGia/ChiTietSach/@sach.MaSach">
+                                            <img src="@(string.IsNullOrEmpty(sach.HinhAnh) ? "/images/default-book.png" : sach.HinhAnh)" class="card-img-top book-cover" alt="@sach.TenSach">
+                                        </a>
+                                        <div class="card-body text-center p-3">
+                                            <h6 class="card-title fw-bold text-truncate" title="@sach.TenSach">
+                                                <a href="/DocGia/ChiTietSach/@sach.MaSach" class="text-dark text-decoration-none">@sach.TenSach</a>
+                                            </h6>
+                                            <p class="text-muted small mb-0 text-truncate">@sach.TacGia?.TenTacGia</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
