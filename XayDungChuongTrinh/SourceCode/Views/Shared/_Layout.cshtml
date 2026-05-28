@@ -27,23 +27,174 @@
             font-family: 'Roboto', sans-serif;
         }
         .navbar-custom {
-            background: #003366 !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(18, 18, 20, 0.97) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25) !important;
+            padding: 12px 0;
+            transition: all 0.3s ease;
         }
         .navbar-brand {
-            font-weight: 700;
-            color: white !important;
-            font-size: 1.5rem;
+            padding: 0 !important;
+            transition: all 0.3s ease;
+        }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+        }
+        .logo-icon-box {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #121214 !important;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.25);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .navbar-brand:hover .logo-icon-box {
+            transform: scale(1.08) rotate(-6deg);
+            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.45);
+        }
+        .logo-text-main {
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            color: #ffffff !important;
             font-family: 'Roboto', sans-serif;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .logo-text-sub {
+            color: #f1c40f;
+            background: linear-gradient(120deg, #f1c40f 0%, #f39c12 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            margin-left: 2px;
         }
         .nav-link {
-            color: white !important;
+            color: rgba(255, 255, 255, 0.85) !important;
             font-weight: 500;
-            margin: 0 10px;
-            transition: all 0.3s;
+            font-size: 1.02rem;
+            margin: 0 12px;
+            position: relative;
+            padding: 6px 0 !important;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f1c40f;
+            transition: width 0.3s ease;
+            border-radius: 2px;
         }
         .nav-link:hover {
-            color: #cccccc !important;
+            color: #ffffff !important;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-search-input {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            padding-left: 45px !important;
+            transition: all 0.3s ease !important;
+            border-radius: 30px !important;
+            font-size: 0.95rem;
+        }
+        .nav-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+        }
+        .nav-search-input:focus {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: #f1c40f !important;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.25) !important;
+        }
+        .nav-search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.45);
+            transition: color 0.3s ease;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .position-relative:focus-within .nav-search-icon {
+            color: #f1c40f;
+        }
+        .profile-dropdown-btn {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 30px !important;
+            padding: 6px 18px !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-dropdown-btn:hover, .profile-dropdown-btn:focus {
+            background: rgba(255, 255, 255, 0.18) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            color: #ffffff !important;
+        }
+        .dropdown-menu {
+            border: none !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+            border-radius: 12px !important;
+            padding: 8px !important;
+        }
+        .dropdown-item {
+            border-radius: 8px !important;
+            padding: 8px 16px !important;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background: rgba(0, 51, 102, 0.05) !important;
+            color: #003366 !important;
+        }
+        .dropdown-item.text-danger:hover {
+            background: rgba(231, 76, 60, 0.05) !important;
+            color: #e74c3c !important;
+        }
+        .nav-bell-link {
+            background: rgba(255, 255, 255, 0.08);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            color: #ffffff !important;
+            position: relative;
+        }
+        .nav-bell-link:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: scale(1.05);
+        }
+        .nav-bell-badge {
+            font-size: 9px !important;
+            padding: 4px 6px !important;
+            border: 2px solid rgba(0, 31, 63, 0.96) !important;
         }
         .main-container {
             background: #f8f9fa;
@@ -115,12 +266,19 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/"><i class="fas fa-book-open"></i> Thư viện</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <a class="navbar-brand" href="/">
+                <div class="logo-wrapper">
+                    <div class="logo-icon-box">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <span class="logo-text-main">THƯ<span class="logo-text-sub">VIỆN</span></span>
+                </div>
+            </a>
+            <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="box-shadow: none;">
+                <i class="fas fa-bars fs-4" style="color: white;"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Trang chủ</a>
                     </li>
@@ -131,29 +289,29 @@
                         <a class="nav-link" href="/Home/About">Giới thiệu</a>
                     </li>
                 </ul>
-                <form class="d-flex me-3 position-relative" action="/Home/Books" method="get">
-                    <div class="input-group" style="width: 300px;">
-                        <input class="form-control rounded-pill border-0" type="search" placeholder="Tìm kiếm sách..." name="keyword" style="background: white; color: black; padding-left: 40px;">
-                        <i class="fas fa-search position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                <form class="d-flex me-3 position-relative mb-2 mb-lg-0" action="/Home/Books" method="get">
+                    <div class="position-relative" style="width: 260px;">
+                        <input class="form-control nav-search-input" type="search" placeholder="Tìm kiếm sách..." name="keyword" style="padding-right: 20px;">
+                        <i class="fas fa-search nav-search-icon"></i>
                     </div>
                 </form>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-center">
                     @if (Context.Session.GetString("MaNguoiDung") != null)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link position-relative" href="/DocGia/NhanThongBao">
+                        <li class="nav-item mb-2 mb-lg-0">
+                            <a class="nav-bell-link" href="/DocGia/NhanThongBao">
                                 <i class="fas fa-bell"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
-                                    @ViewBag.UnreadCount ?? 0
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nav-bell-badge">
+                                    @(ViewBag.UnreadCount ?? 0)
                                 </span>
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> @Context.Session.GetString("HoTen")
+                            <a class="nav-link dropdown-toggle profile-dropdown-btn" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle fs-5"></i> @Context.Session.GetString("HoTen")
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/DocGia/Dashboard">Trang Độc Giả</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2">
+                                <li><a class="dropdown-item" href="/DocGia/Dashboard"><i class="fas fa-columns me-2 text-primary"></i>Trang Độc Giả</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="/Auth/Logout"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                             </ul>
@@ -162,7 +320,7 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link" href="/Auth/Login">Đăng nhập</a>
+                            <a class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-white shadow-sm" href="/Auth/Login" style="font-size: 0.95rem;">Đăng nhập <i class="fas fa-sign-in-alt ms-1"></i></a>
                         </li>
                     }
                 </ul>

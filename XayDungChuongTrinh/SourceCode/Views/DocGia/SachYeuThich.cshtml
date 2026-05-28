@@ -174,25 +174,52 @@
 
 <script>
     function removeFavorite(sachId) {
-        if (!confirm('Bạn có chắc muốn xóa sách này khỏi danh sách yêu thích?')) return;
-        
-        fetch('/DocGia/XoaSachYeuThich', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id: sachId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert(data.message || 'Có lỗi xảy ra!');
+        Swal.fire({
+            title: 'Xóa khỏi yêu thích?',
+            text: "Bạn có chắc chắn muốn bỏ cuốn sách này khỏi danh sách yêu thích?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Đồng ý xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/DocGia/XoaSachYeuThich', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: sachId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã xóa thành công!',
+                            text: 'Sách đã được loại bỏ khỏi danh sách yêu thích.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại',
+                            text: data.message || 'Có lỗi xảy ra!'
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi kết nối',
+                        text: 'Không thể kết nối tới máy chủ lúc này!'
+                    });
+                });
             }
-        })
-        .catch(error => {
-            alert('Có lỗi xảy ra!');
         });
     }
 </script>

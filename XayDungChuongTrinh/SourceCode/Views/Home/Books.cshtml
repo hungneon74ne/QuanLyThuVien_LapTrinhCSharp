@@ -1,28 +1,37 @@
+@model IEnumerable<QuanLyThuVien.Models.Sach>
 @{
     ViewData["Title"] = "Danh sách sách";
 }
 
 <div class="main-container">
     <!-- Search and Filter -->
-    <form asp-action="Books" method="get" class="mb-4">
-        <div class="row">
+    <form asp-action="Books" method="get" class="mb-5">
+        <div class="row g-3">
             <div class="col-md-8">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-lg" placeholder="Tìm kiếm sách theo tên, tác giả..." name="keyword">
-                    <button class="btn" type="submit" style="background: #003366; color: white; border: none; border-radius: 0;">
+                    <input type="text" class="form-control form-control-lg border-0 shadow-sm" placeholder="Tìm kiếm sách theo tên, tác giả..." name="keyword" value="@ViewBag.Keyword" style="border-radius: 8px 0 0 8px;">
+                    <button class="btn btn-lg px-4" type="submit" style="background: #003366; color: white; border: none; border-radius: 0 8px 8px 0;">
                         <i class="fas fa-search"></i> Tìm kiếm
                     </button>
                 </div>
             </div>
             <div class="col-md-4">
-                <select class="form-select form-select-lg" name="category">
+                <select class="form-select form-select-lg border-0 shadow-sm" name="category" onchange="this.form.submit()" style="border-radius: 8px;">
                     <option value="">Tất cả thể loại</option>
-                    <option value="1">Văn học</option>
-                    <option value="2">Khoa học</option>
-                    <option value="3">Lịch sử</option>
-                    <option value="4">Nghệ thuật</option>
-                    <option value="5">Thiếu nhi</option>
-                    <option value="6">Tâm lý</option>
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var cat in ViewBag.Categories)
+                        {
+                            if (ViewBag.SelectedCategory != null && (int)ViewBag.SelectedCategory == cat.MaTheLoai)
+                            {
+                                <option value="@cat.MaTheLoai" selected>@cat.TenTheLoai</option>
+                            }
+                            else
+                            {
+                                <option value="@cat.MaTheLoai">@cat.TenTheLoai</option>
+                            }
+                        }
+                    }
                 </select>
             </div>
         </div>
@@ -30,148 +39,49 @@
 
     <!-- Books Grid -->
     <div class="row">
-        <!-- Book 1 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Cho tôi xin một vé đi tuổi thơ</h5>
-                    <p class="card-text text-muted mb-2">Nguyễn Nhật Ánh</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Văn học</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/1" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Book 2 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Harry Potter và Hòn đá Phù thủy</h5>
-                    <p class="card-text text-muted mb-2">J.K. Rowling</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Kinh dị</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.8</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/2" class="text-decoration-none">Xem chi tiết</a>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var sach in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card book-card h-100 shadow-sm border-0" style="transition: transform 0.2s, box-shadow 0.2s; border-radius: 12px; overflow: hidden;">
+                        @if (!string.IsNullOrEmpty(sach.HinhAnh))
+                        {
+                            <img src="@sach.HinhAnh" class="card-img-top" alt="@sach.TenSach" style="height: 320px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div style="height: 320px; background: #e0e0e0; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-book text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        }
+                        <div class="card-body d-flex flex-column p-3">
+                            <h5 class="card-title fw-bold" style="font-size: 1.05rem; min-height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;" title="@sach.TenSach">@sach.TenSach</h5>
+                            <p class="card-text text-muted mb-2 small"><i class="fas fa-pen-nib me-1"></i> @sach.TacGia?.TenTacGia</p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                                <span class="badge bg-secondary">@sach.TheLoai?.TenTheLoai</span>
+                                <small class="text-success fw-bold" style="font-size: 0.95rem;">@sach.GiaTien?.ToString("N0") đ</small>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/DocGia/ChiTietSach/@sach.MaSach" class="btn btn-outline-primary btn-sm w-100 py-2 fw-semibold" style="border-radius: 6px;">
+                                    <i class="fas fa-info-circle me-1"></i> Xem chi tiết
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search-minus fa-4x text-muted mb-3"></i>
+                <h4 class="fw-bold text-muted">Không tìm thấy sách phù hợp</h4>
+                <p class="text-muted">Hãy thử từ khóa khác hoặc lọc theo thể loại khác.</p>
+                <a href="/Home/Books" class="btn btn-primary mt-2 px-4 py-2 fw-semibold" style="background: #003366; border: none; border-radius: 6px;">
+                    <i class="fas fa-undo me-2"></i>Xem tất cả sách
+                </a>
             </div>
-        </div>
-
-        <!-- Book 3 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Chí Phèo</h5>
-                    <p class="card-text text-muted mb-2">Nam Cao</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Văn học cổ điển</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.3</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/3" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Book 4 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Đắc Nhân Tâm</h5>
-                    <p class="card-text text-muted mb-2">Dale Carnegie</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Tự giúp bản thân</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.9</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/4" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Book 5 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Nhà Giả Kim</h5>
-                    <p class="card-text text-muted mb-2">Paulo Coelho</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Tiểu thuyết</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.6</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/5" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Book 6 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Sapiens: Lược sử loài người</h5>
-                    <p class="card-text text-muted mb-2">Yuval Noah Harari</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Lịch sử</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.7</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/6" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Book 7 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Tư duy nhanh và chậm</h5>
-                    <p class="card-text text-muted mb-2">Daniel Kahneman</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Tâm lý học</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.5</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/7" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Book 8 -->
-        <div class="col-md-3 mb-4">
-            <div class="card book-card">
-                <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400" class="card-img-top" alt="Sách">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">Cây cam ngọt của tôi</h5>
-                    <p class="card-text text-muted mb-2">José Mauro de Vasconcelos</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-secondary">Thiếu nhi</span>
-                        <small class="text-muted"><i class="fas fa-star text-warning"></i> 4.8</small>
-                    </div>
-                    <div class="mt-3">
-                        <a href="/DocGia/ChiTietSach/8" class="text-decoration-none">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
