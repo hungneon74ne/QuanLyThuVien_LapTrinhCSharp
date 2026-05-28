@@ -42,6 +42,7 @@ namespace QuanLyThuVien
             builder.Services.AddScoped<QuanLyThuVien.Business.QuyDinhBusiness>();
             var app = builder.Build();
 
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseSession();
             app.UseAuthorization();

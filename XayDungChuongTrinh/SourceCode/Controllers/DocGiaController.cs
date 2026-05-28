@@ -170,6 +170,28 @@ namespace QuanLyThuVien.Controllers
 
             var sachIds = data["sachIds"];
 
+            // Kiểm tra tính hợp lệ của từng sách trước khi tạo phiếu mượn
+            foreach (var sId in sachIds)
+            {
+                var sach = _context.Sachs.FirstOrDefault(s => s.MaSach == sId && s.DaXoa == 0);
+                if (sach == null)
+                    return Json(new { success = false, message = "Sách không tồn tại!" });
+
+                if (sach.SoLuongHienCo <= 0)
+                    return Json(new { success = false, message = $"Sách '{sach.TenSach}' đã hết bản in trong kho, không thể mượn!" });
+
+                // Kiểm tra xem độc giả đã mượn hoặc đang yêu cầu mượn cuốn này chưa
+                var daDangKy = _context.ChiTietPhieuMuons
+                    .Any(ct => ct.MaSach == sId && 
+                               ct.PhieuMuon.MaDocGia == maDocGia.Value && 
+                               ct.TrangThaiTra == 0 && 
+                               (ct.PhieuMuon.TrangThai == TrangThaiPhieuMuon.ChoDuyet || 
+                                ct.PhieuMuon.TrangThai == TrangThaiPhieuMuon.DangMuon));
+                
+                if (daDangKy)
+                    return Json(new { success = false, message = $"Bạn đang mượn hoặc đã gửi yêu cầu mượn sách '{sach.TenSach}' trước đó!" });
+            }
+
             var phieuMuon = new PhieuMuon
             {
                 MaDocGia = maDocGia.Value,
@@ -192,7 +214,7 @@ namespace QuanLyThuVien.Controllers
             }
             _context.SaveChanges();
 
-            return Json(new { success = true, message = "Đã gửi yêu cầu mượn sách!" });
+            return Json(new { success = true, message = "Đã gửi yêu cầu mượn sách thành công!" });
         }
 
         [HttpPost]
@@ -296,7 +318,12 @@ namespace QuanLyThuVien.Controllers
             var exists = _context.SachYeuThichs.Any(s => s.MaDocGia == maDocGia.Value && s.MaSach == sachId);
             if (!exists)
             {
-                _context.SachYeuThichs.Add(new SachYeuThich { MaDocGia = maDocGia.Value, MaSach = sachId });
+                _context.SachYeuThichs.Add(new SachYeuThich 
+                { 
+                    MaDocGia = maDocGia.Value, 
+                    MaSach = sachId,
+                    NgayThem = DateTime.Now
+                });
                 _context.SaveChanges();
             }
             return Json(new { success = true, message = "Đã thêm vào yêu thích!" });
