@@ -37,13 +37,15 @@ CREATE TABLE tacgia (
     MaTacGia INT AUTO_INCREMENT PRIMARY KEY,
     TenTacGia VARCHAR(255) NOT NULL,
     TieuSu TEXT,
-    DaXoa INT DEFAULT 0
+    DaXoa INT DEFAULT 0,
+    NgayXoa DATETIME NULL
 );
 
 CREATE TABLE theloai (
     MaTheLoai INT AUTO_INCREMENT PRIMARY KEY,
     TenTheLoai VARCHAR(255) NOT NULL,
-    DaXoa INT DEFAULT 0
+    DaXoa INT DEFAULT 0,
+    NgayXoa DATETIME NULL
 );
 
 CREATE TABLE nhaxuatban (
@@ -51,13 +53,15 @@ CREATE TABLE nhaxuatban (
     TenNhaXuatBan VARCHAR(255) NOT NULL,
     DiaChi VARCHAR(255),
     SoDienThoai VARCHAR(20),
-    DaXoa INT DEFAULT 0
+    DaXoa INT DEFAULT 0,
+    NgayXoa DATETIME NULL
 );
 
 CREATE TABLE vaitrodocgia (
     MaVaiTro INT AUTO_INCREMENT PRIMARY KEY,
     TenVaiTro VARCHAR(150) NOT NULL,
-    DaXoa INT DEFAULT 0
+    DaXoa INT DEFAULT 0,
+    NgayXoa DATETIME NULL
 );
 
 -- =========================
@@ -108,6 +112,7 @@ CREATE TABLE sach (
     MoTa TEXT,
     NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     DaXoa INT DEFAULT 0,
+    NgayXoa DATETIME NULL,
 
     CONSTRAINT fk_sach_tacgia
         FOREIGN KEY (MaTacGia)
