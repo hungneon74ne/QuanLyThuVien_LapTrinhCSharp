@@ -241,6 +241,22 @@ namespace QuanLyThuVien.Controllers
             return RedirectToAction("Dashboard");
         }
 
+        public IActionResult YeuCauMuon()
+        {
+            var maDocGia = GetCurrentDocGiaId();
+            if (!maDocGia.HasValue) return RedirectToAction("Login", "Auth");
+
+            var list = _context.ChiTietPhieuMuons
+                .Include(ct => ct.PhieuMuon)
+                .Include(ct => ct.Sach)
+                    .ThenInclude(s => s.TacGia)
+                .Where(ct => ct.PhieuMuon.MaDocGia == maDocGia.Value && ct.PhieuMuon.TrangThai == TrangThaiPhieuMuon.ChoDuyet)
+                .OrderByDescending(ct => ct.PhieuMuon.NgayMuon)
+                .ToList();
+
+            return View(list);
+        }
+
         public IActionResult DanhSachDangMuon()
         {
             var maDocGia = GetCurrentDocGiaId();

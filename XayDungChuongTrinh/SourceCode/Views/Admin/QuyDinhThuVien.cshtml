@@ -1,0 +1,206 @@
+@model List<QuanLyThuVien.Models.QuyDinh>
+@{
+    ViewData["Title"] = "Quy định thư viện";
+    Layout = "_AdminLayout";
+    ViewBag.ActiveMenu = "QuyDinhThuVien";
+}
+
+<div class="card content-card border-0 shadow-sm">
+    <div class="card-header content-header py-3 d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold"><i class="fas fa-gavel me-2"></i>Quy định thư viện</h4>
+        <button class="btn btn-premium-gold px-4" onclick="addQuyDinh()">
+            <i class="fas fa-plus me-2"></i>Thêm quy định mới
+        </button>
+    </div>
+    <div class="card-body p-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success border-0 shadow-sm" style="border-radius: 8px;">
+                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 8px;">
+                <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            </div>
+        }
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+                @foreach (var qd in Model)
+                {
+                    <div class="col-12 mb-3">
+                        <div class="card border-0 shadow-sm" style="border-radius: 12px; background: #fdfdfd; border-left: 5px solid @(qd.TrangThai == 1 ? "#f1c40f" : "#6c757d") !important;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div style="flex: 1; padding-right: 20px;">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <h5 class="fw-bold mb-0 text-dark me-2">@qd.TieuDe</h5>
+                                            @if (qd.TrangThai == 1)
+                                            {
+                                                <span class="badge bg-success" style="font-size: 0.75rem;">Hiển thị</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary" style="font-size: 0.75rem;">Ẩn</span>
+                                            }
+                                        </div>
+                                        <p class="text-secondary mb-3" style="line-height: 1.6; white-space: pre-line;">@qd.NoiDung</p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar-alt me-1"></i>Ngày tạo: @qd.NgayTao.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-dark" style="border-radius: 8px;" onclick="editQuyDinh(@qd.MaQuyDinh)">
+                                            <i class="fas fa-edit me-1"></i> Sửa
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" style="border-radius: 8px;" onclick="deleteQuyDinh(@qd.MaQuyDinh)">
+                                            <i class="fas fa-trash-alt me-1"></i> Xóa
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-gavel fa-4x mb-3 text-muted" style="opacity: 0.4;"></i>
+                <h5 class="text-muted">Chưa cấu hình quy định nào</h5>
+                <p class="text-muted small">Hãy nhấn vào nút phía trên để thêm quy định thư viện đầu tiên.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal Form -->
+<div class="modal fade" id="quyDinhModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header border-0 text-white py-3" style="background: #333; border-bottom: 2.5px solid #f1c40f !important;">
+                <h5 class="modal-title fw-bold" id="quyDinhModalTitle"><i class="fas fa-gavel me-2"></i>Thêm quy định</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/Admin/SaveQuyDinh" method="POST" id="quyDinhForm">
+                <div class="modal-body p-4">
+                    <input type="hidden" name="maQuyDinh" id="maQuyDinh" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Tiêu đề quy định *</label>
+                        <input type="text" class="form-control" name="tieuDe" id="tieuDe" required placeholder="Nhập tiêu đề ngắn gọn..." style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Nội dung quy định *</label>
+                        <textarea class="form-control" name="noiDung" id="noiDung" rows="6" required placeholder="Nhập nội dung chi tiết của quy định..." style="border-radius: 8px;"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark">Trạng thái hiển thị</label>
+                        <select class="form-select" name="trangThai" id="trangThai" style="border-radius: 8px;">
+                            <option value="1">Hiển thị cho Độc giả</option>
+                            <option value="0">Ẩn quy định</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-light px-4 py-2" style="border-radius: 30px; font-weight: 600;" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary px-5 py-2" style="border-radius: 30px; background: #333; border-color: #333;">Lưu quy định</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@@11"></script>
+<script>
+    let quyDinhModal;
+    document.addEventListener('DOMContentLoaded', () => {
+        quyDinhModal = new bootstrap.Modal(document.getElementById('quyDinhModal'));
+    });
+
+    function addQuyDinh() {
+        document.getElementById('quyDinhModalTitle').innerHTML = '<i class="fas fa-plus me-2"></i>Thêm quy định mới';
+        document.getElementById('quyDinhForm').reset();
+        document.getElementById('maQuyDinh').value = '';
+        quyDinhModal.show();
+    }
+
+    function editQuyDinh(id) {
+        document.getElementById('quyDinhModalTitle').innerHTML = '<i class="fas fa-edit me-2"></i>Cập nhật quy định';
+        document.getElementById('quyDinhForm').reset();
+        document.getElementById('maQuyDinh').value = id;
+
+        fetch('/Admin/GetQuyDinh/' + id)
+            .then(res => res.json())
+            .then(res => {
+                if (res.success && res.data) {
+                    document.getElementById('tieuDe').value = res.data.tieuDe;
+                    document.getElementById('noiDung').value = res.data.noiDung;
+                    document.getElementById('trangThai').value = res.data.trangThai;
+                    quyDinhModal.show();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại',
+                        text: 'Không tìm thấy thông tin quy định.'
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Không thể kết nối đến máy chủ.'
+                });
+            });
+    }
+
+    function deleteQuyDinh(id) {
+        Swal.fire({
+            title: 'Bạn có chắc chắn?',
+            text: "Quy định này sẽ bị xóa hoàn toàn khỏi cơ sở dữ liệu!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Đồng ý xóa',
+            cancelButtonText: 'Hủy bỏ'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/Admin/DeleteQuyDinh/' + id, {
+                    method: 'POST'
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: res.message
+                        });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Không thể thực hiện yêu cầu.'
+                    });
+                });
+            }
+        });
+    }
+</script>
