@@ -11,6 +11,7 @@ namespace QuanLyThuVien.Models
         public int MaTheLoai { get; set; }
         public string TenTheLoai { get; set; }
         public int DaXoa { get; set; }
+        public DateTime? NgayXoa { get; set; }
 
         // Navigation properties
         public ICollection<Sach> Sachs { get; set; }

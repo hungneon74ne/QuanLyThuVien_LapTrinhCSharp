@@ -11,6 +11,7 @@ namespace QuanLyThuVien.Models
         public int MaVaiTro { get; set; }
         public string TenVaiTro { get; set; }
         public int DaXoa { get; set; }
+        public DateTime? NgayXoa { get; set; }
 
         // Navigation properties
         public ICollection<DocGia> DocGias { get; set; }

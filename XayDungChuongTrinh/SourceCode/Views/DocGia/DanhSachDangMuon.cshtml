@@ -7,8 +7,8 @@
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 mb-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+            <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header-premium border-0 py-3">
                     <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
                 </div>
                 <div class="card-body p-0">
@@ -23,14 +23,14 @@
                                 <i class="fas fa-user me-2"></i>Thông tin cá nhân
                             </a>
                         </li>
-                        <li class="list-group-item border-0 py-3">
-                            <a href="/Home/Books" class="text-decoration-none text-secondary hover-primary">
-                                <i class="fas fa-book me-2"></i>Danh sách sách
+                        <li class="list-group-item border-0 py-3 list-group-item-active-gold">
+                            <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none fw-bold">
+                                <i class="fas fa-book-open me-2"></i>Sách đang mượn
                             </a>
                         </li>
-                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
-                            <a href="/DocGia/DanhSachDangMuon" class="text-decoration-none fw-bold" style="color: #003366;">
-                                <i class="fas fa-book-open me-2"></i>Sách đang mượn
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/YeuCauMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-file-invoice me-2"></i>Sách yêu cầu mượn
                             </a>
                         </li>
                         <li class="list-group-item border-0 py-3">
@@ -55,9 +55,9 @@
 
         <!-- Main Content -->
         <div class="col-md-9">
-            <div class="card border-0 shadow-sm mb-4" style="border-radius: 10px;">
-                <div class="card-header bg-transparent border-0 pt-4 px-4">
-                    <h4 class="fw-bold text-dark"><i class="fas fa-book-reader text-success me-2"></i>Sách đang mượn</h4>
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-header-premium border-0 py-3 text-white">
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-book-reader me-2"></i>Sách đang mượn</h4>
                 </div>
                 <div class="card-body p-4">
                     <div class="alert alert-info border-0 shadow-sm" style="border-radius: 8px;">
@@ -91,7 +91,18 @@
                                         bool isOverdue = ct.PhieuMuon.HanTra.HasValue && ct.PhieuMuon.HanTra.Value < DateTime.Now;
                                         <tr>
                                             <td class="fw-bold">PM@(ct.PhieuMuon.MaPhieuMuon.ToString("D3"))</td>
-                                            <td class="fw-bold">@ct.Sach.TenSach</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="@(string.IsNullOrEmpty(ct.Sach.HinhAnh) ? "/images/default-book.png" : ct.Sach.HinhAnh)" 
+                                                         alt="@ct.Sach.TenSach" 
+                                                         style="width: 40px; height: 56px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" 
+                                                         class="me-3">
+                                                    <div>
+                                                        <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">@ct.Sach.TenSach</span>
+                                                        <small class="text-muted"><i class="fas fa-barcode me-1"></i>ISBN: @(string.IsNullOrEmpty(ct.Sach.ISBN) ? "N/A" : ct.Sach.ISBN)</small>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>@(ct.Sach.TacGia?.TenTacGia ?? "Chưa rõ")</td>
                                             <td>@ct.PhieuMuon.NgayMuon.ToString("dd/MM/yyyy")</td>
                                             <td class="@(isOverdue ? "text-danger fw-bold" : "")">@ct.PhieuMuon.HanTra?.ToString("dd/MM/yyyy")</td>

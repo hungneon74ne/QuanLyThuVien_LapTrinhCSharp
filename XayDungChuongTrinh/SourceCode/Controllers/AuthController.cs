@@ -26,6 +26,56 @@ namespace QuanLyThuVien.Controllers
             return View();
         }
 
+        // GET: /Auth/Register
+        public IActionResult Register()
+        {
+            if (HttpContext.Session.GetString("MaNguoiDung") != null)
+            {
+                var quyen = (QuyenNguoiDung)int.Parse(HttpContext.Session.GetString("Quyen"));
+                return RedirectBasedOnRole(quyen);
+            }
+            return View();
+        }
+
+        // POST: /Auth/Register
+        [HttpPost]
+        public IActionResult Register(string username, string password, string hoten, string email, string sodienthoai, string gioitinh, DateTime? ngaysinh, string diachi, string socccd)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(hoten))
+            {
+                ViewBag.Error = "Vui lòng nhập đầy đủ thông tin bắt buộc (Tên đăng nhập, Mật khẩu, Họ tên)!";
+                TempData["ErrorMessage"] = "Vui lòng nhập đầy đủ thông tin bắt buộc!";
+                return View();
+            }
+
+            var success = _authBusiness.RegisterDocGia(username, password, hoten, email, sodienthoai, gioitinh, ngaysinh, diachi, socccd);
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Đăng ký tài khoản độc giả thành công! Hãy đăng nhập để bắt đầu.";
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                ViewBag.Error = "Tên đăng nhập đã tồn tại trong hệ thống!";
+                TempData["ErrorMessage"] = "Tên đăng nhập đã tồn tại!";
+                return View();
+            }
+        }
+
+        // GET: /Auth/TestUsers
+        public IActionResult TestUsers()
+        {
+            try
+            {
+                var users = _authBusiness.Login("admin", "123456"); // This triggers the logging logic we added
+                return Json(new { message = "Logged to console. Check the server logs." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
         // POST: /Auth/Login
         [HttpPost]
         public IActionResult Login(string username, string password)

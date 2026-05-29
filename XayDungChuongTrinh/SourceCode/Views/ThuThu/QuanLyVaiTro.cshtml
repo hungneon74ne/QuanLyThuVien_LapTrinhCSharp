@@ -105,21 +105,32 @@
         vaiTroModal.show();
     }
 
-    function editVaiTro(id) {
+    async function editVaiTro(id) {
+        const res = await fetch(`/ThuThu/GetVaiTroById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
         document.getElementById('vaiTroModalTitle').textContent = 'Sửa vai trò';
+        document.getElementById('maVaiTro').value = result.data.maVaiTro;
+        document.getElementById('tenVaiTro').value = result.data.tenVaiTro || '';
         vaiTroModal.show();
     }
 
     function deleteVaiTro(id) {
-        if (confirm('Bạn có chắc muốn xóa vai trò này?')) {
-            alert('Đã xóa vai trò thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa vai trò này không?', async () => {
+            const result = await apiPost('/ThuThu/DeleteVaiTro', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
 
-    function saveVaiTro() {
-        alert('Đã lưu vai trò thành công!');
-        vaiTroModal.hide();
-        refreshData();
+    async function saveVaiTro() {
+        const form = document.getElementById('vaiTroForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const result = await apiPost('/ThuThu/SaveVaiTro', {
+            maVaiTro: parseInt(document.getElementById('maVaiTro').value) || 0,
+            tenVaiTro: document.getElementById('tenVaiTro').value
+        });
+        if (result.success) { showToast(result.message, 'success'); vaiTroModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>

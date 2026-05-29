@@ -1,6 +1,6 @@
 @model List<QuanLyThuVien.Models.ChiTietPhieuMuon>
 @{
-    ViewData["Title"] = "Lịch sử mượn";
+    ViewData["Title"] = "Sách đang yêu cầu mượn";
 }
 
 <div class="container-fluid">
@@ -28,13 +28,13 @@
                                 <i class="fas fa-book-open me-2"></i>Sách đang mượn
                             </a>
                         </li>
-                        <li class="list-group-item border-0 py-3">
-                            <a href="/DocGia/YeuCauMuon" class="text-decoration-none text-secondary hover-primary">
+                        <li class="list-group-item border-0 py-3 list-group-item-active-gold">
+                            <a href="/DocGia/YeuCauMuon" class="text-decoration-none fw-bold">
                                 <i class="fas fa-file-invoice me-2"></i>Sách yêu cầu mượn
                             </a>
                         </li>
-                        <li class="list-group-item border-0 py-3 list-group-item-active-gold">
-                            <a href="/DocGia/LichSuMuon" class="text-decoration-none fw-bold">
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/LichSuMuon" class="text-decoration-none text-secondary hover-primary">
                                 <i class="fas fa-history me-2"></i>Lịch sử mượn
                             </a>
                         </li>
@@ -57,20 +57,24 @@
         <div class="col-md-9">
             <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
                 <div class="card-header-premium border-0 py-3 text-white">
-                    <h4 class="mb-0 fw-bold"><i class="fas fa-history me-2"></i>Lịch sử mượn trả sách</h4>
+                    <h4 class="mb-0 fw-bold"><i class="fas fa-file-invoice me-2"></i>Sách đang yêu cầu mượn</h4>
                 </div>
                 <div class="card-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                    <div class="alert alert-info border-0 shadow-sm" style="border-radius: 8px;">
+                        <i class="fas fa-info-circle me-2 text-info"></i>Các yêu cầu này đang chờ **Thủ thư duyệt cấp sách**. Bạn có thể hủy yêu cầu mượn trước khi được duyệt duyệt.
+                    </div>
+
+                    <div class="table-responsive mt-3">
+                        <table class="table table-hover align-middle mb-0">
                             <thead>
                                 <tr class="text-muted" style="font-size: 0.9rem;">
                                     <th>Mã phiếu</th>
-                                    <th>Tên sách</th>
-                                    <th>Ngày mượn</th>
-                                    <th>Hạn trả</th>
-                                    <th>Ngày trả</th>
+                                    <th>Thông tin Sách</th>
+                                    <th>Tác giả</th>
+                                    <th>Ngày yêu cầu</th>
+                                    <th>Hạn duyệt tối đa</th>
                                     <th>Trạng thái</th>
-                                    <th>Tiền phạt</th>
+                                    <th class="text-end">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,40 +96,16 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>@ct.PhieuMuon.NgayMuon.ToString("dd/MM/yyyy")</td>
-                                            <td>@ct.PhieuMuon.HanTra?.ToString("dd/MM/yyyy")</td>
+                                            <td>@(ct.Sach?.TacGia?.TenTacGia ?? "Chưa rõ")</td>
+                                            <td class="text-secondary">@ct.PhieuMuon.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td class="text-muted">@ct.PhieuMuon.NgayMuon.AddDays(3).ToString("dd/MM/yyyy")</td>
                                             <td>
-                                                @(ct.TrangThaiTra == (int)QuanLyThuVien.Enums.TrangThaiTraSach.DaTra && ct.PhieuTra != null 
-                                                    ? ct.PhieuTra.NgayTra.ToString("dd/MM/yyyy") 
-                                                    : "-")
+                                                <span class="badge bg-warning text-dark"><i class="far fa-clock me-1"></i>Chờ duyệt</span>
                                             </td>
-                                            <td>
-                                                @if (ct.TrangThaiTra == (int)QuanLyThuVien.Enums.TrangThaiTraSach.DaTra)
-                                                {
-                                                    <span class="badge bg-success">Đã trả</span>
-                                                }
-                                                else
-                                                {
-                                                    @if (ct.PhieuMuon.TrangThai == QuanLyThuVien.Enums.TrangThaiPhieuMuon.ChoDuyet)
-                                                    {
-                                                        <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                                                    }
-                                                    else if (ct.PhieuMuon.TrangThai == QuanLyThuVien.Enums.TrangThaiPhieuMuon.TuChoi)
-                                                    {
-                                                        <span class="badge bg-danger">Từ chối</span>
-                                                    }
-                                                    else if (ct.PhieuMuon.TrangThai == QuanLyThuVien.Enums.TrangThaiPhieuMuon.DaHuy)
-                                                    {
-                                                        <span class="badge bg-dark">Đã hủy</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge bg-info">Đang mượn</span>
-                                                    }
-                                                }
-                                            </td>
-                                            <td class="fw-bold @(ct.PhieuTra != null && ct.PhieuTra.TienPhat > 0 ? "text-danger" : "text-secondary")">
-                                                @(ct.PhieuTra != null ? ct.PhieuTra.TienPhat.ToString("N0") + " VNĐ" : "0 VNĐ")
+                                            <td class="text-end">
+                                                <button class="btn btn-sm btn-outline-danger px-3 py-1.5" style="border-radius: 20px; font-weight: 600; font-size: 0.8rem;" onclick="huyYeuCau(@ct.PhieuMuon.MaPhieuMuon)">
+                                                    <i class="fas fa-times me-1"></i> Hủy yêu cầu
+                                                </button>
                                             </td>
                                         </tr>
                                     }
@@ -134,8 +114,9 @@
                                 {
                                     <tr>
                                         <td colspan="7" class="text-center py-5">
-                                            <i class="far fa-folder-open fa-3x text-muted mb-3"></i>
-                                            <p class="text-muted mb-0">Bạn chưa có lịch sử mượn trả nào.</p>
+                                            <i class="fas fa-file-invoice fa-3x text-muted mb-3" style="opacity: 0.35;"></i>
+                                            <p class="text-muted mb-0">Bạn hiện không có yêu cầu mượn sách nào đang chờ duyệt.</p>
+                                            <a href="/Home/Books" class="btn btn-premium-gold btn-sm mt-3 px-4 py-2" style="border-radius: 30px;"><i class="fas fa-search me-1"></i>Tìm sách để mượn</a>
                                         </td>
                                     </tr>
                                 }
@@ -147,3 +128,56 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@@11"></script>
+<script>
+    function huyYeuCau(id) {
+        Swal.fire({
+            title: 'Hủy yêu cầu mượn?',
+            text: "Bạn có chắc chắn muốn hủy yêu cầu mượn sách này?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Đồng ý hủy',
+            cancelButtonText: 'Không, giữ lại'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/DocGia/HuyYeuCauMuonSach', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thất bại',
+                            text: res.message
+                        });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Không thể thực hiện yêu cầu.'
+                    });
+                });
+            }
+        });
+    }
+</script>
