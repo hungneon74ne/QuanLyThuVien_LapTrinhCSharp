@@ -105,38 +105,40 @@
     document.addEventListener('DOMContentLoaded', () => {
         tacGiaModal = new bootstrap.Modal(document.getElementById('tacGiaModal'));
     });
-
-    function searchTacGia() {
-        const keyword = document.getElementById('searchInput').value;
-        window.location.href = `/ThuThu/QuanLyTacGia?keyword=${keyword}`;
-    }
-
-    function refreshData() {
-        window.location.href = '/ThuThu/QuanLyTacGia';
-    }
-
+    function searchTacGia() { window.location.href = `/ThuThu/QuanLyTacGia?keyword=${document.getElementById('searchInput').value}`; }
+    function refreshData() { window.location.href = '/ThuThu/QuanLyTacGia'; }
     function addTacGia() {
         document.getElementById('tacGiaModalTitle').textContent = 'Thêm tác giả';
         document.getElementById('tacGiaForm').reset();
         document.getElementById('maTacGia').value = '';
         tacGiaModal.show();
     }
-
-    function editTacGia(id) {
+    async function editTacGia(id) {
+        const res = await fetch(`/ThuThu/GetTacGiaById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
         document.getElementById('tacGiaModalTitle').textContent = 'Sửa tác giả';
+        document.getElementById('maTacGia').value = result.data.maTacGia;
+        document.getElementById('tenTacGia').value = result.data.tenTacGia || '';
+        document.getElementById('tieuSu').value = result.data.tieuSu || '';
         tacGiaModal.show();
     }
-
     function deleteTacGia(id) {
-        if (confirm('Bạn có chắc muốn xóa tác giả này?')) {
-            alert('Đã xóa tác giả thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa tác giả này không?', async () => {
+            const result = await apiPost('/ThuThu/DeleteTacGia', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
-
-    function saveTacGia() {
-        alert('Đã lưu tác giả thành công!');
-        tacGiaModal.hide();
-        refreshData();
+    async function saveTacGia() {
+        const form = document.getElementById('tacGiaForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const result = await apiPost('/ThuThu/SaveTacGia', {
+            maTacGia: parseInt(document.getElementById('maTacGia').value) || 0,
+            tenTacGia: document.getElementById('tenTacGia').value,
+            tieuSu: document.getElementById('tieuSu').value
+        });
+        if (result.success) { showToast(result.message, 'success'); tacGiaModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>

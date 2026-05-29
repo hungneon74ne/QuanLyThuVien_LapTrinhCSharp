@@ -138,24 +138,11 @@
     });
 
     function approveRequest(id) {
-        if (confirm('Bạn có chắc muốn duyệt yêu cầu mượn này?')) {
-            // Call API to approve
-            fetch('/ThuThu/DuyetYeuCauMuon', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Đã duyệt yêu cầu thành công!');
-                    location.reload();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra!');
-                }
-            })
-            .catch(() => alert('Có lỗi xảy ra!'));
-        }
+        showConfirm('Bạn có chắc muốn duyệt yêu cầu mượn này không?', async () => {
+            const result = await apiPost('/ThuThu/DuyetYeuCauMuon', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(() => location.reload(), 1200); }
+            else showToast(result.message || 'Có lỗi xảy ra!', 'danger');
+        });
     }
 
     function rejectRequest(id) {
@@ -164,30 +151,12 @@
         rejectModal.show();
     }
 
-    function confirmReject() {
+    async function confirmReject() {
         const id = document.getElementById('rejectPhieuId').value;
         const reason = document.getElementById('rejectReason').value;
-        
-        if (!reason.trim()) {
-            alert('Vui lòng nhập lý do từ chối!');
-            return;
-        }
-        
-        fetch('/ThuThu/TuChoiYeuCauMuon', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id, reason: reason })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Đã từ chối yêu cầu thành công!');
-                rejectModal.hide();
-                location.reload();
-            } else {
-                alert(data.message || 'Có lỗi xảy ra!');
-            }
-        })
-        .catch(() => alert('Có lỗi xảy ra!'));
+        if (!reason.trim()) { showToast('Vui lòng nhập lý do từ chối!', 'warning'); return; }
+        const result = await apiPost('/ThuThu/TuChoiYeuCauMuon', { id: parseInt(id), reason });
+        if (result.success) { showToast(result.message, 'success'); rejectModal.hide(); setTimeout(() => location.reload(), 1200); }
+        else showToast(result.message || 'Có lỗi xảy ra!', 'danger');
     }
 </script>
