@@ -33,6 +33,11 @@
                                 <i class="fas fa-book-open me-2"></i>Sách đang mượn
                             </a>
                         </li>
+                        <li class="list-group-item border-0 py-3">
+                            <a href="/DocGia/YeuCauMuon" class="text-decoration-none text-secondary hover-primary">
+                                <i class="fas fa-file-invoice me-2"></i>Sách yêu cầu mượn
+                            </a>
+                        </li>
                         <li class="list-group-item border-0 py-3 list-group-item-active-gold">
                             <a href="/DocGia/LichSuMuon" class="text-decoration-none fw-bold">
                                 <i class="fas fa-history me-2"></i>Lịch sử mượn
@@ -80,7 +85,18 @@
                                     {
                                         <tr>
                                             <td class="fw-bold">PM@(ct.PhieuMuon.MaPhieuMuon.ToString("D3"))</td>
-                                            <td class="fw-bold">@(ct.Sach?.TenSach ?? "Chưa rõ")</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="@(string.IsNullOrEmpty(ct.Sach?.HinhAnh) ? "/images/default-book.png" : ct.Sach.HinhAnh)" 
+                                                         alt="@(ct.Sach?.TenSach ?? "Chưa rõ")" 
+                                                         style="width: 40px; height: 56px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" 
+                                                         class="me-3">
+                                                    <div>
+                                                        <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">@(ct.Sach?.TenSach ?? "Chưa rõ")</span>
+                                                        <small class="text-muted"><i class="fas fa-barcode me-1"></i>ISBN: @(string.IsNullOrEmpty(ct.Sach?.ISBN) ? "N/A" : ct.Sach.ISBN)</small>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>@ct.PhieuMuon.NgayMuon.ToString("dd/MM/yyyy")</td>
                                             <td>@ct.PhieuMuon.HanTra?.ToString("dd/MM/yyyy")</td>
                                             <td>
@@ -130,34 +146,6 @@
                                 }
                             </tbody>
                         </table>
-                    </div>
-
-                    <!-- Thống kê -->
-                    <div class="row mt-4">
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-0 shadow-sm text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 8px;">
-                                <div class="card-body p-4">
-                                    <h6 class="card-title text-white-50"><i class="fas fa-book-reader me-1"></i> Tổng số lần mượn</h6>
-                                    <p class="card-text display-5 fw-bold mb-0">@ViewBag.TongSoLanMuon</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-0 shadow-sm text-white" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 8px;">
-                                <div class="card-body p-4">
-                                    <h6 class="card-title text-white-50"><i class="fas fa-check-circle me-1"></i> Đã trả đúng hạn</h6>
-                                    <p class="card-text display-5 fw-bold mb-0">@ViewBag.DaTraDungHan</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border-0 shadow-sm text-white" style="background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%); border-radius: 8px;">
-                                <div class="card-body p-4">
-                                    <h6 class="card-title text-white-50"><i class="fas fa-hand-holding-dollar me-1"></i> Tổng tiền phạt</h6>
-                                    <p class="card-text display-5 fw-bold mb-0">@(((decimal)ViewBag.TongTienPhat).ToString("N0")) VNĐ</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

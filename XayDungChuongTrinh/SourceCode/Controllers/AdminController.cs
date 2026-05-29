@@ -113,5 +113,83 @@ namespace QuanLyThuVien.Controllers
 
             return RedirectToAction("QuanLyNguoiDung");
         }
+
+        public IActionResult QuyDinhThuVien()
+        {
+            if (GetCurrentAdminId() == null) return RedirectToAction("Login", "Auth");
+
+            var quyDinhs = _context.QuyDinhs
+                .OrderByDescending(q => q.NgayTao)
+                .ToList();
+            return View(quyDinhs);
+        }
+
+        [HttpGet]
+        public IActionResult GetQuyDinh(int id)
+        {
+            if (GetCurrentAdminId() == null) return Unauthorized();
+
+            var qd = _context.QuyDinhs.FirstOrDefault(q => q.MaQuyDinh == id);
+            if (qd == null) return NotFound();
+
+            return Json(new { success = true, data = qd });
+        }
+
+        [HttpPost]
+        public IActionResult SaveQuyDinh(int? maQuyDinh, string tieuDe, string noiDung, int trangThai)
+        {
+            if (GetCurrentAdminId() == null) return RedirectToAction("Login", "Auth");
+
+            if (string.IsNullOrEmpty(tieuDe) || string.IsNullOrEmpty(noiDung))
+            {
+                TempData["ErrorMessage"] = "Vui lòng nhập đầy đủ thông tin bắt buộc.";
+                return RedirectToAction("QuyDinhThuVien");
+            }
+
+            if (maQuyDinh.HasValue && maQuyDinh.Value > 0)
+            {
+                // Update
+                var qd = _context.QuyDinhs.FirstOrDefault(q => q.MaQuyDinh == maQuyDinh.Value);
+                if (qd != null)
+                {
+                    qd.TieuDe = tieuDe;
+                    qd.NoiDung = noiDung;
+                    qd.TrangThai = trangThai;
+                    _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Cập nhật quy định thành công!";
+                }
+            }
+            else
+            {
+                // Insert
+                var qd = new QuyDinh
+                {
+                    TieuDe = tieuDe,
+                    NoiDung = noiDung,
+                    TrangThai = trangThai,
+                    NgayTao = DateTime.Now
+                };
+                _context.QuyDinhs.Add(qd);
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Thêm mới quy định thành công!";
+            }
+
+            return RedirectToAction("QuyDinhThuVien");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteQuyDinh(int id)
+        {
+            if (GetCurrentAdminId() == null) return Unauthorized();
+
+            var qd = _context.QuyDinhs.FirstOrDefault(q => q.MaQuyDinh == id);
+            if (qd != null)
+            {
+                _context.QuyDinhs.Remove(qd);
+                _context.SaveChanges();
+                return Json(new { success = true, message = "Xóa quy định thành công!" });
+            }
+            return Json(new { success = false, message = "Không tìm thấy quy định." });
+        }
     }
 }
