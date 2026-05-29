@@ -21,10 +21,11 @@
         background: #f8f9fa;
     }
     .notification-header {
-        background: linear-gradient(135deg, #003366 0%, #00509e 100%);
+        background: rgba(18, 18, 20, 0.98) !important;
         color: white;
         border-radius: 12px 12px 0 0;
         padding: 20px;
+        border-bottom: 2.5px solid #f1c40f !important;
     }
 </style>
 
@@ -33,7 +34,7 @@
         <!-- Sidebar -->
         <div class="col-md-3 mb-4">
             <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
-                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+                <div class="card-header-premium border-0 py-3">
                     <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
                 </div>
                 <div class="card-body p-0">
@@ -68,8 +69,8 @@
                                 <i class="fas fa-heart me-2"></i>Sách yêu thích
                             </a>
                         </li>
-                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
-                            <a href="/DocGia/NhanThongBao" class="text-decoration-none fw-bold" style="color: #003366;">
+                        <li class="list-group-item border-0 py-3 list-group-item-active-gold">
+                            <a href="/DocGia/NhanThongBao" class="text-decoration-none fw-bold">
                                 <i class="fas fa-bell me-2"></i>Thông báo
                             </a>
                         </li>
@@ -88,7 +89,7 @@
             <div class="card notification-card">
                 <div class="notification-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 fw-bold"><i class="fas fa-bell me-2"></i>Thông báo</h4>
-                    <button type="button" class="btn btn-light btn-sm fw-bold" onclick="markAllAsRead()">
+                    <button type="button" class="btn btn-premium-gold btn-sm" onclick="markAllAsRead()">
                         <i class="fas fa-check-double me-1"></i>Đánh dấu tất cả đã đọc
                     </button>
                 </div>

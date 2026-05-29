@@ -6,7 +6,7 @@
     /* Section Title with Accent Line */
     .about-title {
         font-weight: 800;
-        color: #003366;
+        color: #121214 !important;
         position: relative;
         padding-bottom: 12px;
         margin-bottom: 25px;
@@ -18,7 +18,7 @@
         left: 0;
         width: 60px;
         height: 4px;
-        background: #003366;
+        background: #f1c40f !important; /* Gold underline */
         border-radius: 2px;
     }
     .about-title-center::after {
@@ -31,17 +31,17 @@
         background: #fff;
         border-radius: 16px;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        border: 1px solid rgba(0,0,0,0.04);
+        border: 1px solid rgba(241, 196, 15, 0.15) !important;
     }
     .about-stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 51, 102, 0.05);
-        border-color: rgba(0, 51, 102, 0.1);
+        box-shadow: 0 15px 30px rgba(241, 196, 15, 0.1) !important;
+        border-color: rgba(241, 196, 15, 0.35) !important;
     }
     .stat-icon-large {
         font-size: 2.5rem;
-        color: #003366;
-        background: rgba(0, 51, 102, 0.05);
+        color: #f1c40f !important;
+        background: rgba(241, 196, 15, 0.08) !important;
         width: 80px;
         height: 80px;
         border-radius: 50%;
@@ -52,8 +52,8 @@
         transition: all 0.3s;
     }
     .about-stat-card:hover .stat-icon-large {
-        background: #003366;
-        color: #fff;
+        background: #f1c40f !important;
+        color: #121214 !important;
     }
 
     /* Content Cards */
@@ -70,22 +70,27 @@
         padding-left: 30px;
         margin-bottom: 15px;
         font-size: 1.05rem;
-        color: #555;
+        color: #334155 !important;
     }
     .check-list li i {
         position: absolute;
         left: 0;
         top: 4px;
-        color: #27ae60;
+        color: #f1c40f !important; /* Gold icons for about page list items */
         font-size: 1.15rem;
+    }
+    .about-desc {
+        color: #334155 !important;
+        font-size: 1.05rem;
+        line-height: 1.8;
     }
 </style>
 
 <div class="main-container px-2">
     <!-- Header Hero -->
-    <div class="text-center mb-5 py-4" style="background: rgba(0,51,102,0.03); border-radius: 16px;">
-        <h1 class="fw-extrabold text-primary mb-2" style="font-size: 2.8rem; font-weight: 850; color: #003366;">Về Thư Viện Của Chúng Tôi</h1>
-        <p class="lead text-muted fs-5" style="max-width: 650px; margin: 0 auto; font-weight: 300;">Nơi kết nối đam mê, lan tỏa tri thức và kiến tạo không gian học tập văn minh, hiện đại cho mọi độc giả.</p>
+    <div class="text-center mb-5 py-4" style="background: rgba(18,18,20,0.03); border-radius: 16px;">
+        <h1 class="fw-extrabold mb-2" style="font-size: 2.8rem; font-weight: 850; color: #121214;">Về Thư Viện Của Chúng Tôi</h1>
+        <p class="lead fs-5" style="max-width: 650px; margin: 0 auto; font-weight: 400; color: #475569;">Nơi kết nối đam mê, lan tỏa tri thức và kiến tạo không gian học tập văn minh, hiện đại cho mọi độc giả.</p>
     </div>
 
     <!-- Sứ Mệnh & Hình Ảnh -->
@@ -98,11 +103,11 @@
         </div>
         <div class="col-lg-6">
             <h2 class="about-title">Sứ Mệnh Khơi Nguồn Tri Thức</h2>
-            <p class="text-muted fs-5" style="line-height: 1.8; text-align: justify; font-weight: 350;">Thư viện được thành lập với tầm nhìn trở thành trung tâm kết nối tri thức đỉnh cao, truyền cảm hứng văn hóa đọc tích cực trong cộng đồng học thuật và độc giả tự do.</p>
-            <p class="text-muted mb-4" style="line-height: 1.8; text-align: justify; font-weight: 350;">Chúng tôi cung cấp kho tàng tư liệu đa dạng, kết hợp hài hòa giữa sách in truyền thống quý giá và học liệu trực tuyến hiện đại. Đội ngũ thủ thư chuyên nghiệp luôn đồng hành hỗ trợ, kiến tạo trải nghiệm mượn trả và tra cứu thông minh nhất.</p>
+            <p class="about-desc mb-3" style="text-align: justify; font-weight: 400;">Thư viện được thành lập với tầm nhìn trở thành trung tâm kết nối tri thức đỉnh cao, truyền cảm hứng văn hóa đọc tích cực trong cộng đồng học thuật và độc giả tự do.</p>
+            <p class="about-desc mb-4" style="text-align: justify; font-weight: 400;">Chúng tôi cung cấp kho tàng tư liệu đa dạng, kết hợp hài hòa giữa sách in truyền thống quý giá và học liệu trực tuyến hiện đại. Đội ngũ thủ thư chuyên nghiệp luôn đồng hành hỗ trợ, kiến tạo trải nghiệm mượn trả và tra cứu thông minh nhất.</p>
             <div class="d-flex gap-3">
-                <a href="/Home/Books" class="btn btn-primary px-4 py-2 fw-semibold" style="background: #003366; border: none; border-radius: 8px;">Tìm kiếm sách <i class="fas fa-search ms-2 small"></i></a>
-                <a href="/Auth/Login" class="btn btn-outline-primary px-4 py-2 fw-semibold" style="border-radius: 8px;">Gia nhập độc giả</a>
+                <a href="/Home/Books" class="btn px-4 py-2 fw-semibold" style="background: #121214; color: #ffffff; border: none; border-radius: 8px; transition: transform 0.2s ease;">Tìm kiếm sách <i class="fas fa-search ms-2 small"></i></a>
+                <a href="/Auth/Login" class="btn btn-outline-dark px-4 py-2 fw-semibold" style="border-radius: 8px;">Gia nhập độc giả</a>
             </div>
         </div>
     </div>
@@ -114,8 +119,8 @@
                 <div class="stat-icon-large">
                     <i class="fas fa-book"></i>
                 </div>
-                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #003366;">10,000+</h3>
-                <p class="text-muted mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px;">Đầu Sách Bản Quyền</p>
+                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #121214;">10,000+</h3>
+                <p class="mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px; color: #f39c12;">Đầu Sách Bản Quyền</p>
             </div>
         </div>
         <div class="col-md-4">
@@ -123,8 +128,8 @@
                 <div class="stat-icon-large">
                     <i class="fas fa-users"></i>
                 </div>
-                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #003366;">5,000+</h3>
-                <p class="text-muted mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px;">Độc Giả Thường Xuyên</p>
+                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #121214;">5,000+</h3>
+                <p class="mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px; color: #f39c12;">Độc Giả Thường Xuyên</p>
             </div>
         </div>
         <div class="col-md-4">
@@ -132,8 +137,8 @@
                 <div class="stat-icon-large">
                     <i class="fas fa-history"></i>
                 </div>
-                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #003366;">10 Năm</h3>
-                <p class="text-muted mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px;">Hoạt Động & Phát Triển</p>
+                <h3 class="fw-bold mb-1" style="font-size: 2.2rem; color: #121214;">10 Năm</h3>
+                <p class="mb-0 fw-semibold text-uppercase small" style="letter-spacing: 1px; color: #f39c12;">Hoạt Động & Phát Triển</p>
             </div>
         </div>
     </div>
@@ -151,23 +156,23 @@
             </ul>
         </div>
         <div class="col-lg-6">
-            <div class="card about-card shadow-sm p-4 h-100 border-0">
-                <h3 class="about-title" style="font-size: 1.5rem;"><i class="fas fa-clock text-primary me-2"></i>Khung Giờ Mở Cửa</h3>
-                <p class="text-muted small mb-4">Chúng tôi hân hạnh đón tiếp quý bạn đọc vào các khung giờ sau:</p>
+            <div class="card about-card shadow-sm p-4 h-100 border-0" style="border: 1px solid rgba(241, 196, 15, 0.15) !important;">
+                <h3 class="about-title" style="font-size: 1.5rem;"><i class="fas fa-clock text-warning me-2"></i>Khung Giờ Mở Cửa</h3>
+                <p class="small mb-4" style="color: #64748b;">Chúng tôi hân hạnh đón tiếp quý bạn đọc vào các khung giờ sau:</p>
                 <div class="table-responsive">
                     <table class="table table-borderless align-middle">
                         <tbody>
                             <tr class="border-bottom" style="border-color: #f0f0f0 !important;">
                                 <td class="py-3 text-dark fw-semibold">Thứ 2 - Thứ 6</td>
-                                <td class="py-3 text-end fw-bold text-primary" style="color: #003366 !important;">08:00 - 20:00</td>
+                                <td class="py-3 text-end fw-bold text-primary" style="color: #f39c12 !important;">08:00 - 20:00</td>
                             </tr>
                             <tr class="border-bottom" style="border-color: #f0f0f0 !important;">
                                 <td class="py-3 text-dark fw-semibold">Thứ 7</td>
-                                <td class="py-3 text-end fw-bold text-primary" style="color: #003366 !important;">08:00 - 18:00</td>
+                                <td class="py-3 text-end fw-bold text-primary" style="color: #f39c12 !important;">08:00 - 18:00</td>
                             </tr>
                             <tr>
                                 <td class="py-3 text-dark fw-semibold">Chủ Nhật</td>
-                                <td class="py-3 text-end fw-bold text-primary" style="color: #003366 !important;">09:00 - 17:00</td>
+                                <td class="py-3 text-end fw-bold text-primary" style="color: #f39c12 !important;">09:00 - 17:00</td>
                             </tr>
                         </tbody>
                     </table>

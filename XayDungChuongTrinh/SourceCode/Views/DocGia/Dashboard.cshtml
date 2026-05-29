@@ -69,11 +69,11 @@
     }
     .section-title {
         font-size: 18px;
-        font-weight: 700;
-        color: #003366;
+        font-weight: 800;
+        color: #121214;
         margin-bottom: 20px;
         padding-bottom: 10px;
-        border-bottom: 2px solid #eaeaea;
+        border-bottom: 2px solid rgba(241, 196, 15, 0.35);
     }
     .custom-list-group-item {
         border-left: none;
@@ -106,13 +106,13 @@
         <!-- Sidebar -->
         <div class="col-md-3 mb-4">
             <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
-                <div class="card-header border-0 py-3" style="background: #003366; color: white;">
+                <div class="card-header-premium border-0 py-3">
                     <h5 class="mb-0 fw-bold"><i class="fas fa-bars me-2"></i>Menu Độc Giả</h5>
                 </div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item border-0 py-3" style="background: rgba(0,51,102,0.05);">
-                            <a href="/DocGia/Dashboard" class="text-decoration-none fw-bold" style="color: #003366;">
+                        <li class="list-group-item border-0 py-3 list-group-item-active-gold">
+                            <a href="/DocGia/Dashboard" class="text-decoration-none fw-bold">
                                 <i class="fas fa-home me-2"></i>Trang chủ
                             </a>
                         </li>
@@ -154,7 +154,7 @@
         <!-- Main Content -->
         <div class="col-md-9">
             
-            <div class="welcome-banner">
+            <div class="welcome-banner reader-welcome-banner">
                 <h2 class="fw-bold mb-2">Xin chào, @(ViewBag.DocGia?.TenDocGia ?? "Độc giả")!</h2>
                 <p class="mb-0 fs-5"><i class="fas fa-id-card me-2"></i>Mã thẻ: <strong>DG@(ViewBag.DocGia?.MaDocGia.ToString("D3"))</strong> &nbsp;|&nbsp; <i class="fas fa-user-tag me-2"></i>Đối tượng: <strong>@(ViewBag.DocGia?.VaiTroDocGia?.TenVaiTro ?? "Chưa có")</strong></p>
                 <p class="mb-0 mt-2 text-white-50"><i class="fas fa-calendar-alt me-2"></i>Ngày gia nhập: @(ViewBag.DocGia?.NgayBatDau?.ToString("dd/MM/yyyy"))</p>
@@ -162,8 +162,8 @@
 
             <div class="row">
                 <div class="col-md-4">
-                    <div class="stat-card" style="border-left-color: #f39c12;">
-                        <div class="stat-icon" style="color: #f39c12; background: rgba(243, 156, 18, 0.1);">
+                    <div class="stat-card reader-stat-card-gold">
+                        <div class="stat-icon" style="color: #f39c12; background: rgba(241, 196, 15, 0.1);">
                             <i class="fas fa-book-open"></i>
                         </div>
                         <div class="stat-details">
@@ -173,7 +173,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="stat-card" style="border-left-color: #e74c3c;">
+                    <div class="stat-card reader-stat-card-red">
                         <div class="stat-icon" style="color: #e74c3c; background: rgba(231, 76, 60, 0.1);">
                             <i class="fas fa-heart"></i>
                         </div>
@@ -184,8 +184,8 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="stat-card" style="border-left-color: #27ae60;">
-                        <div class="stat-icon" style="color: #27ae60; background: rgba(39, 174, 96, 0.1);">
+                    <div class="stat-card reader-stat-card-blue">
+                        <div class="stat-icon" style="color: #3498db; background: rgba(52, 152, 219, 0.1);">
                             <i class="fas fa-history"></i>
                         </div>
                         <div class="stat-details">

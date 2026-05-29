@@ -91,7 +91,7 @@
             padding: 6px 0 !important;
             transition: color 0.3s ease;
         }
-        .nav-link::after {
+        .nav-link:not(.profile-dropdown-btn)::after {
             content: '';
             position: absolute;
             bottom: 0;
@@ -105,13 +105,13 @@
         .nav-link:hover {
             color: #ffffff !important;
         }
-        .nav-link:hover::after {
+        .nav-link:not(.profile-dropdown-btn):hover::after {
             width: 100%;
         }
         .nav-search-input {
-            background: rgba(255, 255, 255, 0.08) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
             color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border: 1.5px solid #f1c40f !important;
             padding-left: 45px !important;
             transition: all 0.3s ease !important;
             border-radius: 30px !important;
@@ -121,28 +121,28 @@
             color: rgba(255, 255, 255, 0.45);
         }
         .nav-search-input:focus {
-            background: rgba(255, 255, 255, 0.15) !important;
-            border-color: #f1c40f !important;
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.25) !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-color: #f39c12 !important;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.3) !important;
         }
         .nav-search-icon {
             position: absolute;
             left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.45);
+            color: #f1c40f !important;
             transition: color 0.3s ease;
             pointer-events: none;
             z-index: 5;
         }
         .position-relative:focus-within .nav-search-icon {
-            color: #f1c40f;
+            color: #f39c12 !important;
         }
         .profile-dropdown-btn {
             background: rgba(255, 255, 255, 0.08) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border: none !important;
             border-radius: 30px !important;
-            padding: 6px 18px !important;
+            padding: 8px 20px !important;
             color: #ffffff !important;
             transition: all 0.3s ease;
             display: flex;
@@ -151,7 +151,6 @@
         }
         .profile-dropdown-btn:hover, .profile-dropdown-btn:focus {
             background: rgba(255, 255, 255, 0.18) !important;
-            border-color: rgba(255, 255, 255, 0.3) !important;
             color: #ffffff !important;
         }
         .dropdown-menu {
@@ -196,6 +195,93 @@
             padding: 4px 6px !important;
             border: 2px solid rgba(0, 31, 63, 0.96) !important;
         }
+        .btn-nav-login {
+            background: transparent !important;
+            border: none !important;
+            color: #f1c40f !important;
+            padding: 8px 16px !important;
+            font-weight: 700 !important;
+            font-size: 1.02rem !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: none !important;
+            text-decoration: none !important;
+        }
+        .btn-nav-login:hover {
+            color: #ffffff !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            transform: translateY(-1px);
+            text-decoration: none !important;
+        }
+
+        /* Cohesive Reader Pages Theme (Charcoal Dark + Gold Accent) */
+        .card-header-premium {
+            background: rgba(18, 18, 20, 0.98) !important;
+            color: #ffffff !important;
+            border-bottom: 2.5px solid #f1c40f !important; /* Premium Gold border */
+            font-weight: 700 !important;
+        }
+        .reader-welcome-banner {
+            background: linear-gradient(135deg, #121214 0%, #1e293b 100%) !important;
+            border-left: 5px solid #f1c40f !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 16px !important;
+        }
+        .reader-welcome-banner h2 {
+            color: #ffffff !important;
+        }
+        .reader-welcome-banner p {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+        .reader-welcome-banner strong {
+            color: #f1c40f !important; /* Gold highlights */
+        }
+        .reader-stat-card-gold {
+            border-left: 5px solid #f1c40f !important;
+            border-radius: 16px !important;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03) !important;
+        }
+        .reader-stat-card-blue {
+            border-left: 5px solid #3498db !important;
+            border-radius: 16px !important;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03) !important;
+        }
+        .reader-stat-card-red {
+            border-left: 5px solid #e74c3c !important;
+            border-radius: 16px !important;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.03) !important;
+        }
+        /* Active Link gold coloring in sidebars */
+        .list-group-item-active-gold {
+            background: rgba(241, 196, 15, 0.06) !important;
+            border-left: 4px solid #f1c40f !important;
+        }
+        .list-group-item-active-gold a {
+            color: #f39c12 !important;
+            font-weight: 700 !important;
+        }
+        /* Input borders */
+        .form-control-premium:focus {
+            border-color: #f1c40f !important;
+            box-shadow: 0 0 0 0.25rem rgba(241, 196, 15, 0.15) !important;
+        }
+        /* Buttons outline gold */
+        .btn-premium-gold {
+            background: transparent !important;
+            border: 1.5px solid #f1c40f !important;
+            color: #f1c40f !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+        .btn-premium-gold:hover {
+            background: #f1c40f !important;
+            color: #121214 !important;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2) !important;
+        }
+
         .main-container {
             background: #f8f9fa;
             padding: 40px;
@@ -320,7 +406,7 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-white shadow-sm" href="/Auth/Login" style="font-size: 0.95rem;">Đăng nhập <i class="fas fa-sign-in-alt ms-1"></i></a>
+                            <a class="btn-nav-login" href="/Auth/Login">Đăng nhập <i class="fas fa-sign-in-alt"></i></a>
                         </li>
                     }
                 </ul>
