@@ -130,21 +130,36 @@
         nxbModal.show();
     }
 
-    function editNXB(id) {
+    async function editNXB(id) {
+        const res = await fetch(`/ThuThu/GetNhaXuatBanById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
         document.getElementById('nxbModalTitle').textContent = 'Sửa nhà xuất bản';
+        document.getElementById('maNXB').value = result.data.maNhaXuatBan;
+        document.getElementById('tenNXB').value = result.data.tenNhaXuatBan || '';
+        document.getElementById('diaChi').value = result.data.diaChi || '';
+        document.getElementById('soDienThoai').value = result.data.soDienThoai || '';
         nxbModal.show();
     }
 
     function deleteNXB(id) {
-        if (confirm('Bạn có chắc muốn xóa nhà xuất bản này?')) {
-            alert('Đã xóa nhà xuất bản thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa nhà xuất bản này không?', async () => {
+            const result = await apiPost('/ThuThu/DeleteNhaXuatBan', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
 
-    function saveNXB() {
-        alert('Đã lưu nhà xuất bản thành công!');
-        nxbModal.hide();
-        refreshData();
+    async function saveNXB() {
+        const form = document.getElementById('nxbForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const result = await apiPost('/ThuThu/SaveNhaXuatBan', {
+            maNhaXuatBan: parseInt(document.getElementById('maNXB').value) || 0,
+            tenNhaXuatBan: document.getElementById('tenNXB').value,
+            diaChi: document.getElementById('diaChi').value,
+            soDienThoai: document.getElementById('soDienThoai').value
+        });
+        if (result.success) { showToast(result.message, 'success'); nxbModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>

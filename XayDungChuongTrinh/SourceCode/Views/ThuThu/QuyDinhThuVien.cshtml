@@ -110,21 +110,36 @@
         quyDinhModal.show();
     }
 
-    function editQuyDinh(id) {
+    async function editQuyDinh(id) {
+        const res = await fetch(`/ThuThu/GetQuyDinhById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
         document.getElementById('quyDinhModalTitle').textContent = 'Sửa quy định';
+        document.getElementById('maQuyDinh').value = result.data.maQuyDinh;
+        document.getElementById('tieuDe').value = result.data.tieuDe || '';
+        document.getElementById('noiDung').value = result.data.noiDung || '';
+        document.getElementById('trangThai').value = result.data.trangThai;
         quyDinhModal.show();
     }
 
     function deleteQuyDinh(id) {
-        if (confirm('Bạn có chắc muốn xóa quy định này?')) {
-            alert('Đã xóa quy định thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa quy định này không?', async () => {
+            const result = await apiPost('/ThuThu/DeleteQuyDinh', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
 
-    function saveQuyDinh() {
-        alert('Đã lưu quy định thành công!');
-        quyDinhModal.hide();
-        refreshData();
+    async function saveQuyDinh() {
+        const form = document.getElementById('quyDinhForm');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const result = await apiPost('/ThuThu/SaveQuyDinh', {
+            maQuyDinh: parseInt(document.getElementById('maQuyDinh').value) || 0,
+            tieuDe: document.getElementById('tieuDe').value,
+            noiDung: document.getElementById('noiDung').value,
+            trangThai: parseInt(document.getElementById('trangThai').value)
+        });
+        if (result.success) { showToast(result.message, 'success'); quyDinhModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>

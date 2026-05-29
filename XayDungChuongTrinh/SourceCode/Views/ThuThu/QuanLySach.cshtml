@@ -199,107 +199,98 @@
 <script>
     let bookModal;
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         bookModal = new bootstrap.Modal(document.getElementById('bookModal'));
-        loadDropdowns();
+        await loadDropdowns();
     });
 
-    function loadDropdowns() {
-        // Load tác giả, thể loại, nhà xuất bản từ API
-        // Đây là placeholder, cần implement API thực tế
+    async function loadDropdowns() {
+        const res = await fetch('/ThuThu/GetDropdowns');
+        const data = await res.json();
+        const tgSel = document.getElementById('tacGia');
+        const tlSel = document.getElementById('theLoai');
+        const nxbSel = document.getElementById('nhaXuatBan');
+        tgSel.innerHTML = '<option value="">Chọn tác giả</option>' + data.tacGias.map(t => `<option value="${t.maTacGia}">${t.tenTacGia}</option>`).join('');
+        tlSel.innerHTML = '<option value="">Chọn thể loại</option>' + data.theLoais.map(t => `<option value="${t.maTheLoai}">${t.tenTheLoai}</option>`).join('');
+        nxbSel.innerHTML = '<option value="">Chọn nhà xuất bản</option>' + data.nhaXuatBans.map(n => `<option value="${n.maNhaXuatBan}">${n.tenNhaXuatBan}</option>`).join('');
     }
 
     function searchBooks() {
-        const keyword = document.getElementById('searchInput').value;
-        window.location.href = `/ThuThu/QuanLySach?keyword=${keyword}`;
+        window.location.href = `/ThuThu/QuanLySach?keyword=${document.getElementById('searchInput').value}`;
     }
-
     function filterByTheLoai() {
-        const theLoai = document.getElementById('theLoaiFilter').value;
-        window.location.href = `/ThuThu/QuanLySach?theLoai=${theLoai}`;
+        window.location.href = `/ThuThu/QuanLySach?theLoai=${document.getElementById('theLoaiFilter').value}`;
     }
-
-    function refreshData() {
-        window.location.href = '/ThuThu/QuanLySach';
-    }
+    function refreshData() { window.location.href = '/ThuThu/QuanLySach'; }
 
     function addBook() {
         document.getElementById('bookModalTitle').textContent = 'Thêm sách mới';
         document.getElementById('bookForm').reset();
         document.getElementById('maSach').value = '';
+        document.getElementById('hinhAnh').value = '';
         bookModal.show();
     }
 
-    function editBook(id) {
+    async function editBook(id) {
+        const res = await fetch(`/ThuThu/GetSachById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
+        const d = result.data;
         document.getElementById('bookModalTitle').textContent = 'Sửa sách';
-        // Load book data by ID
-        // Placeholder - cần implement API
+        document.getElementById('maSach').value = d.maSach;
+        document.getElementById('isbn').value = d.isbn || '';
+        document.getElementById('tenSach').value = d.tenSach || '';
+        document.getElementById('tacGia').value = d.maTacGia || '';
+        document.getElementById('theLoai').value = d.maTheLoai || '';
+        document.getElementById('nhaXuatBan').value = d.maNhaXuatBan || '';
+        document.getElementById('namXuatBan').value = d.namXuatBan || '';
+        document.getElementById('soLuongTong').value = d.soLuongTong || 0;
+        document.getElementById('soLuongHienCo').value = d.soLuongHienCo || 0;
+        document.getElementById('soTrang').value = d.soTrang || '';
+        document.getElementById('giaTien').value = d.giaTien || '';
+        document.getElementById('hinhAnh').value = d.hinhAnh || '';
+        document.getElementById('moTa').value = d.moTa || '';
         bookModal.show();
     }
 
     function deleteBook(id) {
-        if (confirm('Bạn có chắc muốn xóa sách này?')) {
-            // Call API to delete
-            // Placeholder
-            alert('Đã xóa sách thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa sách này không?', async () => {
+            const result = await apiPost('/ThuThu/DeleteSach', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
 
     async function saveBook() {
         const form = document.getElementById('bookForm');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-
-        const fileInput = document.getElementById('hinhAnhFile');
+        if (!form.checkValidity()) { form.reportValidity(); return; }
         let imageUrl = document.getElementById('hinhAnh').value;
-
-        // Upload file nếu có chọn
+        const fileInput = document.getElementById('hinhAnhFile');
         if (fileInput.files.length > 0) {
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
-
-            try {
-                const response = await fetch('/ThuThu/UploadImage', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.success) {
-                    imageUrl = result.imageUrl;
-                } else {
-                    alert('Lỗi upload ảnh: ' + result.message);
-                    return;
-                }
-            } catch (error) {
-                alert('Lỗi upload ảnh: ' + error.message);
-                return;
-            }
+            const r = await fetch('/ThuThu/UploadImage', { method: 'POST', body: formData });
+            const up = await r.json();
+            if (up.success) imageUrl = up.imageUrl;
+            else { showToast('Lỗi upload ảnh: ' + up.message, 'danger'); return; }
         }
-
-        // Call API to save book data
-        const bookData = {
-            maSach: document.getElementById('maSach').value,
+        const data = {
+            maSach: parseInt(document.getElementById('maSach').value) || 0,
             isbn: document.getElementById('isbn').value,
             tenSach: document.getElementById('tenSach').value,
-            maTacGia: document.getElementById('tacGia').value,
-            maTheLoai: document.getElementById('theLoai').value,
-            maNhaXuatBan: document.getElementById('nhaXuatBan').value,
-            namXuatBan: document.getElementById('namXuatBan').value,
-            soLuongTong: document.getElementById('soLuongTong').value,
-            soLuongHienCo: document.getElementById('soLuongHienCo').value,
-            soTrang: document.getElementById('soTrang').value,
-            giaTien: document.getElementById('giaTien').value,
+            maTacGia: parseInt(document.getElementById('tacGia').value) || null,
+            maTheLoai: parseInt(document.getElementById('theLoai').value) || null,
+            maNhaXuatBan: parseInt(document.getElementById('nhaXuatBan').value) || null,
+            namXuatBan: parseInt(document.getElementById('namXuatBan').value) || null,
+            soLuongTong: parseInt(document.getElementById('soLuongTong').value) || 0,
+            soLuongHienCo: parseInt(document.getElementById('soLuongHienCo').value) || 0,
+            soTrang: parseInt(document.getElementById('soTrang').value) || null,
+            giaTien: parseFloat(document.getElementById('giaTien').value) || null,
             hinhAnh: imageUrl,
             moTa: document.getElementById('moTa').value
         };
-
-        // Placeholder - call API to save
-        console.log('Saving book:', bookData);
-        alert('Đã lưu sách thành công!');
-        bookModal.hide();
-        refreshData();
+        const result = await apiPost('/ThuThu/SaveSach', data);
+        if (result.success) { showToast(result.message, 'success'); bookModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>

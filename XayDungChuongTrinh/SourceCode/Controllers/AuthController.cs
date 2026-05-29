@@ -26,6 +26,20 @@ namespace QuanLyThuVien.Controllers
             return View();
         }
 
+        // GET: /Auth/TestUsers
+        public IActionResult TestUsers()
+        {
+            try
+            {
+                var users = _authBusiness.Login("admin", "123456"); // This triggers the logging logic we added
+                return Json(new { message = "Logged to console. Check the server logs." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
         // POST: /Auth/Login
         [HttpPost]
         public IActionResult Login(string username, string password)
