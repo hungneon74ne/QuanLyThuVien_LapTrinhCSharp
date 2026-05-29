@@ -192,54 +192,86 @@
         loadVaiTros();
     });
 
-    function loadVaiTros() {
-        // Load vai trò từ API
-        // Placeholder
+    async function loadVaiTros() {
+        const res = await fetch('/ThuThu/GetVaiTros');
+        const result = await res.json();
+        if (!result.success) return;
+        const select = document.getElementById('vaiTro');
+        select.innerHTML = '<option value="">Chọn vai trò</option>';
+        result.data.forEach(vt => {
+            const opt = document.createElement('option');
+            opt.value = vt.maVaiTro;
+            opt.textContent = vt.tenVaiTro;
+            select.appendChild(opt);
+        });
     }
 
-    function searchDocGia() {
-        const keyword = document.getElementById('searchInput').value;
-        window.location.href = `/ThuThu/QuanLyDocGia?keyword=${keyword}`;
-    }
-
-    function refreshData() {
-        window.location.href = '/ThuThu/QuanLyDocGia';
-    }
+    function searchDocGia() { window.location.href = `/ThuThu/QuanLyDocGia?keyword=${document.getElementById('searchInput').value}`; }
+    function refreshData() { window.location.href = '/ThuThu/QuanLyDocGia'; }
 
     function addDocGia() {
         document.getElementById('docGiaModalTitle').textContent = 'Thêm độc giả mới';
         document.getElementById('docGiaForm').reset();
-        document.getElementById('maDocGia').value = '';
+        document.getElementById('maDocGia').value = '0';
+        document.getElementById('matKhau').required = true;
+        document.getElementById('tenDangNhap').readOnly = false;
         docGiaModal.show();
     }
 
-    function editDocGia(id) {
+    async function editDocGia(id) {
+        const res = await fetch(`/ThuThu/GetDocGiaById?id=${id}`);
+        const result = await res.json();
+        if (!result.success) { showToast('Không tải được dữ liệu!', 'danger'); return; }
+        const d = result.data;
         document.getElementById('docGiaModalTitle').textContent = 'Sửa độc giả';
-        // Load doc gia data by ID
-        // Placeholder
+        document.getElementById('maDocGia').value = d.maDocGia;
+        document.getElementById('hoTen').value = d.tenDocGia || '';
+        document.getElementById('gioiTinh').value = d.gioiTinh || 'Nam';
+        document.getElementById('soDienThoai').value = d.soDienThoai || '';
+        document.getElementById('email').value = d.email || '';
+        document.getElementById('ngaySinh').value = d.ngaySinh || '';
+        document.getElementById('soCCCD').value = d.soCCCD || '';
+        document.getElementById('diaChi').value = d.diaChi || '';
+        document.getElementById('ngayBatDau').value = d.ngayBatDau || '';
+        document.getElementById('ngayKetThuc').value = d.ngayKetThuc || '';
+        document.getElementById('vaiTro').value = d.maVaiTro || '';
+        document.getElementById('tenDangNhap').value = d.tenDangNhap || '';
+        document.getElementById('tenDangNhap').readOnly = true;
+        document.getElementById('matKhau').value = '';
+        document.getElementById('matKhau').required = false;
+        document.getElementById('trangThai').value = d.trangThai;
         docGiaModal.show();
     }
 
     function deleteDocGia(id) {
-        if (confirm('Bạn có chắc muốn xóa độc giả này?')) {
-            // Call API to delete
-            // Placeholder
-            alert('Đã xóa độc giả thành công!');
-            refreshData();
-        }
+        showConfirm('Bạn có chắc muốn xóa độc giả này? Tài khoản sẽ bị khóa!', async () => {
+            const result = await apiPost('/ThuThu/DeleteDocGia', { id });
+            if (result.success) { showToast(result.message, 'success'); setTimeout(refreshData, 1000); }
+            else showToast(result.message || 'Lỗi!', 'danger');
+        });
     }
 
-    function saveDocGia() {
+    async function saveDocGia() {
         const form = document.getElementById('docGiaForm');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-        
-        // Call API to save
-        // Placeholder
-        alert('Đã lưu độc giả thành công!');
-        docGiaModal.hide();
-        refreshData();
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        const maDocGia = parseInt(document.getElementById('maDocGia').value) || 0;
+        const result = await apiPost('/ThuThu/SaveDocGia', {
+            maDocGia,
+            hoTen: document.getElementById('hoTen').value,
+            gioiTinh: document.getElementById('gioiTinh').value,
+            soDienThoai: document.getElementById('soDienThoai').value,
+            email: document.getElementById('email').value,
+            ngaySinh: document.getElementById('ngaySinh').value || null,
+            soCCCD: document.getElementById('soCCCD').value,
+            diaChi: document.getElementById('diaChi').value,
+            ngayBatDau: document.getElementById('ngayBatDau').value || null,
+            ngayKetThuc: document.getElementById('ngayKetThuc').value || null,
+            maVaiTro: parseInt(document.getElementById('vaiTro').value) || null,
+            tenDangNhap: document.getElementById('tenDangNhap').value,
+            matKhau: document.getElementById('matKhau').value || null,
+            trangThai: parseInt(document.getElementById('trangThai').value)
+        });
+        if (result.success) { showToast(result.message, 'success'); docGiaModal.hide(); setTimeout(refreshData, 1000); }
+        else showToast(result.message || 'Lỗi!', 'danger');
     }
 </script>
